@@ -9,9 +9,8 @@ import android.app.Fragment;
 public interface RegisterViewContracts {
 
     interface RegisterView{
-        void startLoginFragment(Fragment fragment, String tag);
+        void startLoginFragment();
         void showToast(String message);
-        void setVisibilityProgressBar(Boolean isVisible);
     }
 
     interface RegisterViewPresenter{

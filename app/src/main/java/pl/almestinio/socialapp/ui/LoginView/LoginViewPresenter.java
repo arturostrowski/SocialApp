@@ -1,7 +1,5 @@
 package pl.almestinio.socialapp.ui.LoginView;
 
-import pl.almestinio.socialapp.ui.RegisterView.RegisterFragment;
-
 /**
  * Created by mesti193 on 3/7/2018.
  */
@@ -22,6 +20,6 @@ public class LoginViewPresenter implements LoginViewContracts.LoginViewPresenter
 
     @Override
     public void onCreateAccountTextViewClick() {
-        loginView.startCreateAccountFragment(new RegisterFragment(), RegisterFragment.class.getName());
+        loginView.startCreateAccountFragment();
     }
 }

@@ -3,7 +3,6 @@ package pl.almestinio.socialapp.ui.LoginView;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
+import pl.almestinio.socialapp.ui.RegisterView.RegisterFragment;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -46,16 +46,15 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
         button.setOnClickListener(v -> loginViewPresenter.onLoginButtonClick());
         textViewRegister.setOnClickListener(v -> loginViewPresenter.onCreateAccountTextViewClick());
 
-
         return view;
     }
 
 
     @Override
-    public void startCreateAccountFragment(Fragment fragment, String tag) {
+    public void startCreateAccountFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(tag);
+        fragmentTransaction.replace(R.id.fragment_container, new RegisterFragment());
+        fragmentTransaction.addToBackStack(RegisterFragment.class.getName());
         fragmentTransaction.commit();
     }
 
@@ -69,8 +68,4 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void setVisibilityProgressBar(Boolean isVisible) {
-
-    }
 }

@@ -9,12 +9,9 @@ import android.app.Fragment;
 interface LoginViewContracts {
 
     interface LoginView{
-
-        void startCreateAccountFragment(Fragment fragment, String tag);
+        void startCreateAccountFragment();
         void startMenuActivity();
         void showToast(String message);
-        void setVisibilityProgressBar(Boolean isVisible);
-
     }
 
     interface LoginViewPresenter{

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
+import pl.almestinio.socialapp.ui.LoginView.LoginFragment;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -49,10 +50,10 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
     }
 
     @Override
-    public void startLoginFragment(Fragment fragment, String tag) {
+    public void startLoginFragment() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(tag);
+        fragmentTransaction.replace(R.id.fragment_container, new LoginFragment());
+        fragmentTransaction.addToBackStack(LoginFragment.class.getName());
         fragmentTransaction.commit();
     }
 
@@ -61,8 +62,4 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void setVisibilityProgressBar(Boolean isVisible) {
-
-    }
 }
