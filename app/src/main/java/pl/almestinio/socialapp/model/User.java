@@ -10,7 +10,7 @@ public class User {
     public static final String COL_NAME = "userid";
 
     private int id;
-    private String userId;
+    private static String userId = "10";
 
     public User(String userId){
         this.userId = userId;
@@ -24,11 +24,11 @@ public class User {
         this.id = id;
     }
 
-    public String getUserId() {
+    public static String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public static void setUserId(String userId) {
+        User.userId = userId;
     }
 }

@@ -8,15 +8,18 @@ public interface TimelineViewContracts {
 
     interface TimelineView{
         void showToast(String message);
+        void startProfileActivity(String userId);
+        void startFullScreenPicture(String imageUrl);
+        void startCommentsActivity(String postId);
     }
 
     interface TimelineViewPresenter{
-        void onNameTextViewClick(String fullName);
-        void onUserImageViewClick();
-        void onDeleteButtonClick();
-        void onImageViewClick();
-        void onLikeButtonClick();
-        void onCommentButtonClick();
+        void onNameTextViewClick(String userId);
+        void onUserImageViewClick(String userId);
+        void onImageViewClick(String imageUrl);
+        void onLikeButtonClick(String postId);
+        void onCommentButtonClick(String postId);
+        void onDeleteImageViewClick();
     }
 
 }

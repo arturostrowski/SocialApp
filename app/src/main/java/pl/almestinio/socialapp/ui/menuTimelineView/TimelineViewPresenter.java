@@ -13,32 +13,36 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
-    public void onNameTextViewClick(String fullName) {
-        timelineView.showToast(fullName);
+    public void onNameTextViewClick(String userId) {
+        timelineView.showToast(userId);
+        timelineView.startProfileActivity(userId);
     }
 
     @Override
-    public void onUserImageViewClick() {
-
+    public void onUserImageViewClick(String userId) {
+        timelineView.showToast(userId);
+        timelineView.startProfileActivity(userId);
     }
 
     @Override
-    public void onDeleteButtonClick() {
-
+    public void onImageViewClick(String imageUrl) {
+        timelineView.showToast(imageUrl);
+        timelineView.startFullScreenPicture(imageUrl);
     }
 
     @Override
-    public void onImageViewClick() {
-
+    public void onLikeButtonClick(String postId) {
+        timelineView.showToast("LikeButtonClicked");
     }
 
     @Override
-    public void onLikeButtonClick() {
-
+    public void onCommentButtonClick(String postId) {
+        timelineView.showToast("CommentButtonClicked");
+        timelineView.startCommentsActivity(postId);
     }
 
     @Override
-    public void onCommentButtonClick() {
+    public void onDeleteImageViewClick() {
 
     }
 }
