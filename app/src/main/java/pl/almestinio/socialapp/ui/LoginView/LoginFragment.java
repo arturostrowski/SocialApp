@@ -1,8 +1,9 @@
-package pl.almestinio.socialapp.ui.LoginView;
+package pl.almestinio.socialapp.ui.loginView;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
-import pl.almestinio.socialapp.ui.RegisterView.RegisterFragment;
+import pl.almestinio.socialapp.ui.menuView.MenuActivity;
+import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -37,7 +39,7 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 
@@ -60,7 +62,7 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
 
     @Override
     public void startMenuActivity() {
-//        startActivity(new Intent(this, MenuActivity.class));
+        startActivity(new Intent(getActivity(), MenuActivity.class));
     }
 
     @Override

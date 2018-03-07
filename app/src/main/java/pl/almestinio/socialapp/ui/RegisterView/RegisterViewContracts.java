@@ -1,6 +1,4 @@
-package pl.almestinio.socialapp.ui.RegisterView;
-
-import android.app.Fragment;
+package pl.almestinio.socialapp.ui.registerView;
 
 /**
  * Created by mesti193 on 3/7/2018.

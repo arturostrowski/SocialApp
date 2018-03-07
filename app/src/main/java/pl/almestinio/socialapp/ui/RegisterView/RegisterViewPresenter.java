@@ -1,4 +1,4 @@
-package pl.almestinio.socialapp.ui.RegisterView;
+package pl.almestinio.socialapp.ui.registerView;
 
 /**
  * Created by mesti193 on 3/7/2018.

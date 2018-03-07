@@ -1,13 +1,13 @@
 package pl.almestinio.socialapp;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import butterknife.ButterKnife;
-import pl.almestinio.socialapp.ui.LoginView.LoginFragment;
+import pl.almestinio.socialapp.ui.loginView.LoginFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setContentView(R.layout.activity_main);
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         changeFragment(new LoginFragment(), LoginFragment.class.getName());
     }
 

@@ -1,4 +1,4 @@
-package pl.almestinio.socialapp.ui.LoginView;
+package pl.almestinio.socialapp.ui.loginView;
 
 /**
  * Created by mesti193 on 3/7/2018.

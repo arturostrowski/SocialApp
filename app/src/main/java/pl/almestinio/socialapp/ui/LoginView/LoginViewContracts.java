@@ -1,6 +1,4 @@
-package pl.almestinio.socialapp.ui.LoginView;
-
-import android.app.Fragment;
+package pl.almestinio.socialapp.ui.loginView;
 
 /**
  * Created by mesti193 on 3/7/2018.

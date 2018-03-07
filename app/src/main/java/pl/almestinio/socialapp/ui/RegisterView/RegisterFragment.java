@@ -1,8 +1,8 @@
-package pl.almestinio.socialapp.ui.RegisterView;
+package pl.almestinio.socialapp.ui.registerView;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
-import pl.almestinio.socialapp.ui.LoginView.LoginFragment;
+import pl.almestinio.socialapp.ui.loginView.LoginFragment;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -37,7 +37,7 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 
