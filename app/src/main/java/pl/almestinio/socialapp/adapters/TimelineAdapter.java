@@ -41,15 +41,14 @@ import retrofit2.Response;
  */
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
-//public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> implements TimelineViewContracts.TimelineView {
 
     TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
-    List<Post_> postsList;
-    Context context;
-    View view;
+    private List<Post_> postsList;
+    private Context context;
+    private View view;
 
-    Transformation transformation = new RoundedTransformationBuilder()
+    private Transformation transformation = new RoundedTransformationBuilder()
             .borderColor(Color.BLACK)
             .borderWidthDp(1)
             .cornerRadiusDp(30)
@@ -86,10 +85,10 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         holder.textViewFullName.setOnClickListener(v -> timelineViewPresenter.onNameTextViewClick(post.getUserId()));
         holder.imageViewUserProfile.setOnClickListener(v -> timelineViewPresenter.onUserImageViewClick(post.getUserId()));
         holder.imageViewCommentPhoto.setOnClickListener(v -> timelineViewPresenter.onImageViewClick(post.getPostPic()));
-        holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId())); // TRZA DOKONCZYC
-        holder.buttonComment.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId())); // TRZA DOKONCZYC
+        holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId()));
+        holder.buttonComment.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
         holder.textViewCountComments.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
-        holder.imageViewDeletePost.setOnClickListener(v -> timelineViewPresenter.onDeleteImageViewClick());
+        holder.imageViewDeletePost.setOnClickListener(v -> timelineViewPresenter.onDeleteImageViewClick(post.getPostId()));
 
     }
 
@@ -105,6 +104,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
                 public void onResponse(Call<Users> call, Response<Users> response) {
                     String test = response.body().getUsers().get(0).getUser().getName();
                     holder.textViewFullName.setText(test);
+                    String deletePost = response.body().getUsers().get(0).getUser().getUserId();
+                    if(deletePost.equals(User.getUserId())){
+                        holder.imageViewDeletePost.setVisibility(View.VISIBLE);
+                    }else{
+                        holder.imageViewDeletePost.setVisibility(View.GONE);
+                    }
                 }
                 @Override
                 public void onFailure(Call<Users> call, Throwable t) {}

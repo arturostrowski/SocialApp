@@ -13,6 +13,11 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
+    public void loadPosts() {
+//        loadPostsFromDatabase(timelineView.isNetworkAvailable());
+    }
+
+    @Override
     public void onNameTextViewClick(String userId) {
         timelineView.showToast(userId);
         timelineView.startProfileActivity(userId);
@@ -42,7 +47,8 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
-    public void onDeleteImageViewClick() {
-
+    public void onDeleteImageViewClick(String postId) {
+        timelineView.showToast("DeletePostClicked");
+        timelineView.showDeletePostAlert(postId);
     }
 }

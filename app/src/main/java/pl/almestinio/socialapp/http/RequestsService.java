@@ -28,4 +28,8 @@ public interface RequestsService {
     @GET("test.php")
     Call<Comments> requestComments(@Query("post_comments") String id);
 
+
+    @GET("deletepost.php")
+    Call<Pojodemo> deletePost(@Query("post_id") String post_id);
+
 }

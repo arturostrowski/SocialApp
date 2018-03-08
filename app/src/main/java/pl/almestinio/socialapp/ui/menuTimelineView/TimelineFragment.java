@@ -1,9 +1,16 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,10 +24,12 @@ import java.util.List;
 
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
+import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
+import pl.almestinio.socialapp.ui.fullscreenpicture.FullScreenPictureActivity;
 import pl.almestinio.socialapp.ui.menuView.MenuActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,11 +39,12 @@ import retrofit2.Response;
  * Created by mesti193 on 3/7/2018.
  */
 
-public class TimelineFragment extends Fragment implements TimelineViewContracts.TimelineView{
+public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, TimelineViewContracts.TimelineView{
 
     private TimelineAdapter timelineAdapter;
     private List<Post_> postsList = new ArrayList<Post_>();
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
@@ -45,6 +55,8 @@ public class TimelineFragment extends Fragment implements TimelineViewContracts.
         setHasOptionsMenu(true);
 
         timelineViewPresenter = new TimelineViewPresenter(this);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         if(!postsList.isEmpty()){
             postsList.clear();
@@ -57,6 +69,12 @@ public class TimelineFragment extends Fragment implements TimelineViewContracts.
         setAdapterAndGetRecyclerView();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timelineViewPresenter.loadPosts();
     }
 
     private void getPosts(){
@@ -89,6 +107,17 @@ public class TimelineFragment extends Fragment implements TimelineViewContracts.
     }
 
     @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        getPosts();
+        swipeRefreshLayout.setRefreshing(false);
+        timelineAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
@@ -100,11 +129,50 @@ public class TimelineFragment extends Fragment implements TimelineViewContracts.
 
     @Override
     public void startFullScreenPicture(String imageUrl) {
-//        startActivity(new Intent(getActivity(), FullScreenPictureActivity.class).putExtra("imageurl", imageUrl));
+        startActivity(new Intent(getActivity(), FullScreenPictureActivity.class).putExtra("imageurl", imageUrl));
     }
 
     @Override
     public void startCommentsActivity(String postId) {
 //        startActivity(new Intent(getActivity(), CommentsActivity.class).putExtra("postid", postId));
+    }
+
+    @Override
+    public void showDeletePostAlert(String postId) {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Holo_Dialog);
+        } else {
+            builder = new AlertDialog.Builder(getActivity());
+        }
+        builder.setTitle("Usun post")
+                .setMessage("Czy chcesz usunac ten post?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+//                            RestClient.getClient().deletePost(postId).enqueue(new Callback<Pojodemo>() {
+//                                @Override
+//                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Call<Pojodemo> call, Throwable t) {
+//
+//                                }
+//                            });
+                            Log.i("USUN", "XDDD");
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        getPosts();
+                        setAdapterAndGetRecyclerView();
+                        timelineAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {}
+                }).show();
     }
 }

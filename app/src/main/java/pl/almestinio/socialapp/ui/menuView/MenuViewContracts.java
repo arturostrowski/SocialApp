@@ -7,6 +7,7 @@ package pl.almestinio.socialapp.ui.menuView;
 interface MenuViewContracts {
 
     interface MenuView{
+        void showToast(String message);
         void startCreatePostActivity();
         void startSearchFriendActivity(String query);
     }

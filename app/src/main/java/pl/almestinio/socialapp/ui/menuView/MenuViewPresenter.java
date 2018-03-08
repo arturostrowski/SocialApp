@@ -15,11 +15,13 @@ public class MenuViewPresenter implements MenuViewContracts.MenuViewPresenter {
 
     @Override
     public void onAddPostMenuItemClick() {
+        menuView.showToast("AddPostClicked");
         menuView.startCreatePostActivity();
     }
 
     @Override
     public void onSearchFriendClick(String query) {
+        menuView.showToast("SearchFriendsClicked");
         menuView.startSearchFriendActivity(query);
     }
 }

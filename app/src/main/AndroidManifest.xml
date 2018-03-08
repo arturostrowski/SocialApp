@@ -3,6 +3,10 @@
     package="pl.almestinio.socialapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name= "android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.Manifest.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".SocialApp"
@@ -28,6 +32,7 @@
                 android:resource="@xml/searchable">
             </meta-data>
         </activity>
+        <activity android:name=".ui.fullscreenpicture.FullScreenPictureActivity"></activity>
     </application>
 
 </manifest>
