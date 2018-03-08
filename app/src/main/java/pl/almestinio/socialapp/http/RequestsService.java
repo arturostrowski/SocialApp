@@ -32,4 +32,11 @@ public interface RequestsService {
     @GET("deletepost.php")
     Call<Pojodemo> deletePost(@Query("post_id") String post_id);
 
+
+
+    @GET("writecomment.php")
+    Call<Pojodemo> writeComment(@Query("post_id") String post_id,
+                                @Query("user_id") String user_id,
+                                @Query("comment") String comment);
+
 }

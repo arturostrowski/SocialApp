@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -31,7 +30,6 @@ import pl.almestinio.socialapp.http.userphoto.UserPhoto;
 import pl.almestinio.socialapp.http.userphoto.UsersPic;
 import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineViewContracts;
-import pl.almestinio.socialapp.ui.menuTimelineView.TimelineViewPresenter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,7 +40,7 @@ import retrofit2.Response;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
 
-    TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
+    private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
     private List<Post_> postsList;
     private Context context;

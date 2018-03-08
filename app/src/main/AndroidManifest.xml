@@ -31,7 +31,8 @@
                 android:resource="@xml/searchable">
             </meta-data>
         </activity>
-        <activity android:name=".ui.fullscreenpicture.FullScreenPictureActivity"></activity>
+        <activity android:name=".ui.fullscreenpictureView.FullScreenPictureActivity"></activity>
+        <activity android:name=".ui.commentsView.CommentsActivity"></activity>
     </application>
 
 </manifest>

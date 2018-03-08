@@ -1,4 +1,4 @@
-package pl.almestinio.socialapp.ui.menuView;
+package pl.almestinio.socialapp.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

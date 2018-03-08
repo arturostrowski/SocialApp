@@ -1,10 +1,7 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,13 +21,12 @@ import java.util.List;
 
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
-import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
-import pl.almestinio.socialapp.ui.fullscreenpicture.FullScreenPictureActivity;
-import pl.almestinio.socialapp.ui.menuView.MenuActivity;
+import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
+import pl.almestinio.socialapp.ui.fullscreenpictureView.FullScreenPictureActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,9 +54,6 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        if(!postsList.isEmpty()){
-            postsList.clear();
-        }
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewTimelinePosts);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -134,7 +127,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void startCommentsActivity(String postId) {
-//        startActivity(new Intent(getActivity(), CommentsActivity.class).putExtra("postid", postId));
+        startActivity(new Intent(getActivity(), CommentsActivity.class).putExtra("postid", postId));
     }
 
     @Override

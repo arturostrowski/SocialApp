@@ -1,9 +1,7 @@
 package pl.almestinio.socialapp.ui.menuView;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
-import pl.almestinio.socialapp.ui.loginView.LoginFragment;
+import pl.almestinio.socialapp.adapters.SectionPagerAdapter;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineFragment;
 import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
 
