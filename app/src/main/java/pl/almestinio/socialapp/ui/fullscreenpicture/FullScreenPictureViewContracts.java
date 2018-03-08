@@ -8,6 +8,7 @@ public class FullScreenPictureViewContracts {
 
     interface FullScreenPictureView{
         void showToast(String message);
+        boolean isPermissionGranted();
     }
 
     interface FullScreenPictureViewPresenter{

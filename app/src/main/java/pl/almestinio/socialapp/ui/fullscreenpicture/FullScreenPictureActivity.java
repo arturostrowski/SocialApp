@@ -1,10 +1,15 @@
 package pl.almestinio.socialapp.ui.fullscreenpicture;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,7 +31,7 @@ public class FullScreenPictureActivity extends AppCompatActivity implements Full
     ImageView imageViewSavePhoto;
     @BindView(R.id.imageViewFullScreenPicture)
     PhotoView imageViewFullScreenPicture;
-    
+
     private PhotoViewAttacher photoViewAttacher;
     private Bundle bundle;
 
@@ -55,5 +60,51 @@ public class FullScreenPictureActivity extends AppCompatActivity implements Full
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean isPermissionGranted() {
+
+        int permission = ContextCompat.checkSelfPermission(FullScreenPictureActivity.this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i("grant", "Permission to record denied");
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Aplikacja nie posiada uprawnien do zapisu plikow na telefonie.")
+                        .setTitle("Brak uprawnien");
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.i("grant", "Clicked");
+                        makeRequest();
+
+                    }
+
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+            } else {
+
+                //makeRequest1();
+                makeRequest();
+                return true;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    protected void makeRequest() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                500);
     }
 }
