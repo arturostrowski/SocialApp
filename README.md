@@ -2,7 +2,7 @@
 
 I've just created a simple project for me to learn basics of Java and some of libraries
 
-In this project I'm trying to use:
+In this project I'm trying to learn:
 <ul>
   <li>MVP</li>
   <li>Butterknife</li>
