@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,12 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
     Button buttonRegister;
     @BindView(R.id.textViewLogin)
     TextView textViewLogin;
+    @BindView(R.id.editTextRegisterFullName)
+    EditText editTextRegisterFullName;
+    @BindView(R.id.editTextRegisterUsername)
+    EditText editTextRegisterUsername;
+    @BindView(R.id.editTextRegisterPassword)
+    EditText editTextRegisterPassword;
 
     RegisterViewContracts.RegisterViewPresenter registerView;
     FragmentManager fragmentManager;
@@ -42,7 +49,7 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
 
         registerView = new RegisterViewPresenter(this);
 
-        buttonRegister.setOnClickListener(v -> registerView.onRegisterButtonClick());
+        buttonRegister.setOnClickListener(v -> registerView.onRegisterButtonClick(editTextRegisterUsername.getText().toString(), editTextRegisterFullName.getText().toString(), editTextRegisterPassword.getText().toString()));
         textViewLogin.setOnClickListener(v -> registerView.onLoginTextViewClick());
 
         return view;

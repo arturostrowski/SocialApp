@@ -12,7 +12,7 @@ public interface RegisterViewContracts {
     }
 
     interface RegisterViewPresenter{
-        void onRegisterButtonClick();
+        void onRegisterButtonClick(String username, String fullName, String password);
         void onLoginTextViewClick();
     }
 

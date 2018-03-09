@@ -115,7 +115,7 @@
         android:textColor="@android:color/white"
         android:layout_marginStart="11dp"
         android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
+        app:layout_constraintBottom_toTopOf="@+id/editTextRegisterPassword"
         app:layout_constraintLeft_toRightOf="@+id/imageViewRegisterPasswordIcon"
         android:layout_marginLeft="11dp" />
 
@@ -146,7 +146,7 @@
         app:layout_constraintLeft_toRightOf="@+id/imageViewRegisterFullName" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/editTextRegisterPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"

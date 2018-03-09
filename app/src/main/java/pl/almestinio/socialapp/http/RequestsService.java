@@ -21,6 +21,10 @@ import retrofit2.http.Query;
 
 public interface RequestsService {
 
+    @GET("adduser.php")
+    Call<Users> addUser(@Query("name") String name,
+                        @Query("email") String username,
+                        @Query("password") String password);
     @GET("test.php")
     Call<Posts> requestPosts(@Query("allposts") String posts);
     @GET("test.php")
@@ -66,4 +70,12 @@ public interface RequestsService {
     @Multipart
     @POST("postpic.php")
     Call<UploadObject> uploadFile(@Part MultipartBody.Part file, @Part("name") RequestBody name);
+
+
+    @GET("changepic.php")
+    Call<UserPhoto> changeUserPhoto(@Query("user_pic_edit") String user_id,
+                                    @Query("user_pic") String user_pic);
+    @GET("changepiccover.php")
+    Call<UserPhoto> changeUserPhotoCover(@Query("user_cover_pic") String user_id,
+                                         @Query("user_pic") String user_pic);
 }

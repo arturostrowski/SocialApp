@@ -30,6 +30,7 @@ import pl.almestinio.socialapp.http.userphoto.UserPhoto;
 import pl.almestinio.socialapp.http.userphoto.UsersPic;
 import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineViewContracts;
+import pl.almestinio.socialapp.ui.profileView.ProfileViewContracts;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +42,8 @@ import retrofit2.Response;
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
 
     private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
+    private ProfileViewContracts.ProfileViewPresenter profileViewPresenter;
+    private int id = 1;
 
     private List<Post_> postsList;
     private Context context;
@@ -60,6 +63,15 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         this.context = context;
         this.timelineViewPresenter = timelineViewPresenter;
     }
+
+    public TimelineAdapter(List<Post_> postsList, Context context, ProfileViewContracts.ProfileViewPresenter profileViewPresenter, int id){
+        this.postsList = postsList;
+        notifyItemRangeChanged(0, postsList.size());
+        this.context = context;
+        this.profileViewPresenter = profileViewPresenter;
+        this.id = id;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -81,13 +93,27 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         holder.textViewDate.setText(post.getPostTime());
         holder.textViewText.setText(post.getPostTxt());
 
-        holder.textViewFullName.setOnClickListener(v -> timelineViewPresenter.onNameTextViewClick(post.getUserId()));
-        holder.imageViewUserProfile.setOnClickListener(v -> timelineViewPresenter.onUserImageViewClick(post.getUserId()));
-        holder.imageViewCommentPhoto.setOnClickListener(v -> timelineViewPresenter.onImageViewClick(post.getPostPic()));
-        holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId(), holder.buttonLike.getTag().equals("clicked")));
-        holder.buttonComment.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
-        holder.textViewCountComments.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
-        holder.imageViewDeletePost.setOnClickListener(v -> timelineViewPresenter.onDeleteImageViewClick(post.getPostId()));
+        try{
+            if(id==2){
+                holder.textViewFullName.setOnClickListener(v -> profileViewPresenter.onNameTextViewClick(post.getUserId()));
+                holder.imageViewUserProfile.setOnClickListener(v -> profileViewPresenter.onUserImageViewClick(post.getUserId()));
+                holder.imageViewCommentPhoto.setOnClickListener(v -> profileViewPresenter.onImageViewClick(post.getPostPic()));
+                holder.buttonLike.setOnClickListener(v -> profileViewPresenter.onLikeButtonClick(post.getPostId(), holder.buttonLike.getTag().equals("clicked")));
+                holder.buttonComment.setOnClickListener(v -> profileViewPresenter.onCommentButtonClick(post.getPostId()));
+                holder.textViewCountComments.setOnClickListener(v -> profileViewPresenter.onCommentButtonClick(post.getPostId()));
+                holder.imageViewDeletePost.setOnClickListener(v -> profileViewPresenter.onDeleteImageViewClick(post.getPostId()));
+            }else{
+                holder.textViewFullName.setOnClickListener(v -> timelineViewPresenter.onNameTextViewClick(post.getUserId()));
+                holder.imageViewUserProfile.setOnClickListener(v -> timelineViewPresenter.onUserImageViewClick(post.getUserId()));
+                holder.imageViewCommentPhoto.setOnClickListener(v -> timelineViewPresenter.onImageViewClick(post.getPostPic()));
+                holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId(), holder.buttonLike.getTag().equals("clicked")));
+                holder.buttonComment.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
+                holder.textViewCountComments.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
+                holder.imageViewDeletePost.setOnClickListener(v -> timelineViewPresenter.onDeleteImageViewClick(post.getPostId()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
