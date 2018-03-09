@@ -13,7 +13,7 @@ interface LoginViewContracts {
     }
 
     interface LoginViewPresenter{
-        void onLoginButtonClick();
+        void onLoginButtonClick(String username, String password);
         void onCreateAccountTextViewClick();
     }
 

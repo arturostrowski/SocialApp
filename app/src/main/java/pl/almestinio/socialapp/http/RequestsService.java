@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.http;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pl.almestinio.socialapp.http.comment.Comments;
 import pl.almestinio.socialapp.http.post.Posts;
 import pl.almestinio.socialapp.http.poststatus.PostStatus;
@@ -8,6 +10,9 @@ import pl.almestinio.socialapp.http.userphoto.UserPhoto;
 import pl.almestinio.socialapp.http.userphotocover.UserPhotoCover;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -22,6 +27,8 @@ public interface RequestsService {
     Call<Posts> requestPostsUser(@Query("post") String post);
     @GET("test.php")
     Call<Users> requestUser(@Query("user") String id);
+    @GET("test.php")
+    Call<Users> requestUsers();
     @GET("test.php")
     Call<UserPhoto> requestUserPhoto(@Query("user_pic") String id);
     @GET("test.php")
@@ -42,4 +49,21 @@ public interface RequestsService {
                                 @Query("user_id") String user_id,
                                 @Query("comment") String comment);
 
+    @GET("insert.php")
+    Call<Pojodemo> likePost(@Query("post_id") String post_id,
+                            @Query("user_id") String user_id);
+
+    @GET("delete.php")
+    Call<Pojodemo> deleteLike(@Query("post_id") String post_id,
+                              @Query("user_id") String user_id);
+
+    @GET("createpost.php")
+    Call<Pojodemo> createPost(@Query("user_id") String user_id,
+                              @Query("post_txt") String post_txt,
+                              @Query("post_pic") String post_pic,
+                              @Query("post_time") String post_time,
+                              @Query("priority") String priority);
+    @Multipart
+    @POST("postpic.php")
+    Call<UploadObject> uploadFile(@Part MultipartBody.Part file, @Part("name") RequestBody name);
 }

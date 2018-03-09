@@ -134,13 +134,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
     @Override
     public void onRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
         commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
         swipeRefreshLayout.setRefreshing(false);
-        commentsAdapter.notifyDataSetChanged();
     }
 
 }

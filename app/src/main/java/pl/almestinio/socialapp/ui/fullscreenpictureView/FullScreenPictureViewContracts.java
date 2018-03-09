@@ -1,4 +1,4 @@
-package pl.almestinio.socialapp.ui.fullscreenpictureView;
+package pl.almestinio.socialapp.ui.fullScreenPictureView;
 
 /**
  * Created by mesti193 on 3/8/2018.

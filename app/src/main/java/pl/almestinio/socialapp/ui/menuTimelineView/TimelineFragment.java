@@ -24,12 +24,14 @@ import java.util.List;
 
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
+import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
+import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
-import pl.almestinio.socialapp.ui.fullscreenpictureView.FullScreenPictureActivity;
+import pl.almestinio.socialapp.ui.fullScreenPictureView.FullScreenPictureActivity;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,18 +73,11 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         recyclerView.setLayoutManager(layoutManager);
 
         timelineViewPresenter.loadPosts(isConnected);
-        setAdapterAndGetRecyclerView();
-
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        timelineViewPresenter.loadPosts(isConnected);
-    }
-
-    private void setAdapterAndGetRecyclerView(){
+    public void setAdapterAndGetRecyclerView(){
         timelineAdapter = new TimelineAdapter(postsList, getContext(), timelineViewPresenter);
         recyclerView.setAdapter(timelineAdapter);
         recyclerView.setNestedScrollingEnabled(false);
@@ -91,16 +86,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
         activeNetwork = connectivityManager.getActiveNetworkInfo();
         isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         timelineViewPresenter.loadPosts(isConnected);
         swipeRefreshLayout.setRefreshing(false);
-        timelineAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -132,6 +121,47 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void likePost(String postId) {
+        try{
+            RestClient.getClient().likePost(postId, User.getUserId()).enqueue(new Callback<Pojodemo>() {
+                @Override
+                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+                }
+                @Override
+                public void onFailure(Call<Pojodemo> call, Throwable t) {
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        timelineAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void unlikePost(String postId) {
+        try{
+            RestClient.getClient().deleteLike(postId, User.getUserId()).enqueue(new Callback<Pojodemo>() {
+                @Override
+                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+                    if(response.body().getSuccess()){
+                        Log.e("Usunieto", ":D");
+                    }else{
+                        Log.e("aaaa", response.body().getError());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Pojodemo> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        timelineAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void startProfileActivity(String userId) {
         startActivity(new Intent(getActivity(), ProfileActivity.class).putExtra("userid", userId));
     }
@@ -159,17 +189,17 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-//                            RestClient.getClient().deletePost(postId).enqueue(new Callback<Pojodemo>() {
-//                                @Override
-//                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onFailure(Call<Pojodemo> call, Throwable t) {
-//
-//                                }
-//                            });
+                            RestClient.getClient().deletePost(postId).enqueue(new Callback<Pojodemo>() {
+                                @Override
+                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<Pojodemo> call, Throwable t) {
+
+                                }
+                            });
                             Log.i("USUN", "XDDD");
 
                         } catch (Exception e) {

@@ -10,7 +10,7 @@ public class User {
     public static final String COL_NAME = "userid";
 
     private int id;
-    private static String userId = "10";
+    private static String userId;
 
     public User(String userId){
         this.userId = userId;
@@ -31,4 +31,5 @@ public class User {
     public static void setUserId(String userId) {
         User.userId = userId;
     }
+
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,7 @@ import pl.almestinio.socialapp.http.user.Users;
 import pl.almestinio.socialapp.http.userphoto.UserPhoto;
 import pl.almestinio.socialapp.http.userphotocover.UserPhotoCover;
 import pl.almestinio.socialapp.http.userphotocover.UsersPic;
-import pl.almestinio.socialapp.ui.fullscreenpictureView.FullScreenPictureActivity;
+import pl.almestinio.socialapp.ui.fullScreenPictureView.FullScreenPictureActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +41,7 @@ import retrofit2.Response;
  * Created by mesti193 on 3/9/2018.
  */
 
-public class ProfileActivity extends AppCompatActivity implements ProfileViewContracts.ProfileView {
+public class ProfileActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, ProfileViewContracts.ProfileView {
 
     @BindView(R.id.textViewProfileName)
     TextView textViewProfileName;
@@ -62,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileViewCon
 
     private Bundle bundle;
     private String bundleStringUserId;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +73,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileViewCon
         bundle = getIntent().getExtras();
         bundleStringUserId = bundle.getString("userid");
         profileViewPresenter = new ProfileViewPresenter(this);
-
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_profile);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         recyclerViewGallery = (RecyclerView) findViewById(R.id.recyclerViewGallery);
         RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(),2);
@@ -191,4 +194,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileViewCon
     }
 
 
+    @Override
+    public void onRefresh() {
+        profileViewPresenter.loadUserProfile(bundleStringUserId);
+        swipeRefreshLayout.setRefreshing(false);
+    }
 }

@@ -17,6 +17,7 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
         if(isNetworkConnection){
             timelineView.showToast("Load post");
             timelineView.showPosts();
+            timelineView.setAdapterAndGetRecyclerView();
         }else{
             timelineView.showToast("Brak polaczenia z internetem");
         }
@@ -41,8 +42,13 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
-    public void onLikeButtonClick(String postId) {
+    public void onLikeButtonClick(String postId, boolean isLiked) {
         timelineView.showToast("LikeButtonClicked");
+        if(isLiked){
+            timelineView.unlikePost(postId);
+        }else{
+            timelineView.likePost(postId);
+        }
     }
 
     @Override

@@ -70,7 +70,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Post_ post = postsList.get(position);
-
+        holder.buttonLike.setTag("");
+        holder.buttonLike.setTextColor(Color.parseColor("#AAAAAA"));
         getUserName(post, holder);
         getUserPic(post, holder);
         getCommentImage(post, holder);
@@ -83,7 +84,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         holder.textViewFullName.setOnClickListener(v -> timelineViewPresenter.onNameTextViewClick(post.getUserId()));
         holder.imageViewUserProfile.setOnClickListener(v -> timelineViewPresenter.onUserImageViewClick(post.getUserId()));
         holder.imageViewCommentPhoto.setOnClickListener(v -> timelineViewPresenter.onImageViewClick(post.getPostPic()));
-        holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId()));
+        holder.buttonLike.setOnClickListener(v -> timelineViewPresenter.onLikeButtonClick(post.getPostId(), holder.buttonLike.getTag().equals("clicked")));
         holder.buttonComment.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
         holder.textViewCountComments.setOnClickListener(v -> timelineViewPresenter.onCommentButtonClick(post.getPostId()));
         holder.imageViewDeletePost.setOnClickListener(v -> timelineViewPresenter.onDeleteImageViewClick(post.getPostId()));

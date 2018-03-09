@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +27,13 @@ import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
 public class LoginFragment extends Fragment implements LoginViewContracts.LoginView{
 
     @BindView(R.id.buttonLogin)
-    Button button;
+    Button buttonLogin;
     @BindView(R.id.textViewRegister)
     TextView textViewRegister;
+    @BindView(R.id.editTextUsername)
+    EditText editTextUsername;
+    @BindView(R.id.editTextPassword)
+    EditText editTextPassword;
 
     private LoginViewContracts.LoginViewPresenter loginViewPresenter;
     private FragmentManager fragmentManager;
@@ -38,13 +43,12 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         setHasOptionsMenu(true);
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 
         loginViewPresenter = new LoginViewPresenter(this);
 
-        button.setOnClickListener(v -> loginViewPresenter.onLoginButtonClick());
+        buttonLogin.setOnClickListener(v -> loginViewPresenter.onLoginButtonClick(editTextUsername.getText().toString(), editTextPassword.getText().toString()));
         textViewRegister.setOnClickListener(v -> loginViewPresenter.onCreateAccountTextViewClick());
 
         return view;

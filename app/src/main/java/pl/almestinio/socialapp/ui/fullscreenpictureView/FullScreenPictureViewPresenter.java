@@ -1,4 +1,4 @@
-package pl.almestinio.socialapp.ui.fullscreenpictureView;
+package pl.almestinio.socialapp.ui.fullScreenPictureView;
 
 import android.content.Context;
 

@@ -1,5 +1,6 @@
 package pl.almestinio.socialapp.ui.menuView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.SectionPagerAdapter;
+import pl.almestinio.socialapp.ui.createPostView.CreatePostActivity;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineFragment;
 import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
 
@@ -139,7 +141,7 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
 
     @Override
     public void startCreatePostActivity() {
-//        startActivity(new Intent(this, CreatePostActivity.class));
+        startActivity(new Intent(this, CreatePostActivity.class));
     }
 
     @Override
