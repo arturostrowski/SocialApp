@@ -13,8 +13,13 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
-    public void loadPosts() {
-//        loadPostsFromDatabase(timelineView.isNetworkAvailable());
+    public void loadPosts(boolean isNetworkConnection) {
+        if(isNetworkConnection){
+            timelineView.showToast("Load post");
+            timelineView.showPosts();
+        }else{
+            timelineView.showToast("Brak polaczenia z internetem");
+        }
     }
 
     @Override

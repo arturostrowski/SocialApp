@@ -1,7 +1,10 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -44,6 +47,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo activeNetwork;
+    private boolean isConnected;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +58,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         setHasOptionsMenu(true);
 
         timelineViewPresenter = new TimelineViewPresenter(this);
+        connectivityManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
 
@@ -58,7 +69,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        getPosts();
+        timelineViewPresenter.loadPosts(isConnected);
         setAdapterAndGetRecyclerView();
 
         return view;
@@ -67,10 +78,37 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onResume() {
         super.onResume();
-        timelineViewPresenter.loadPosts();
+        timelineViewPresenter.loadPosts(isConnected);
     }
 
-    private void getPosts(){
+    private void setAdapterAndGetRecyclerView(){
+        timelineAdapter = new TimelineAdapter(postsList, getContext(), timelineViewPresenter);
+        recyclerView.setAdapter(timelineAdapter);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.invalidate();
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        timelineViewPresenter.loadPosts(isConnected);
+        swipeRefreshLayout.setRefreshing(false);
+        timelineAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showPosts() {
         postsList.clear();
         try{
             RestClient.getClient().requestPosts("").enqueue(new Callback<Posts>() {
@@ -90,29 +128,6 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private void setAdapterAndGetRecyclerView(){
-        timelineAdapter = new TimelineAdapter(postsList, getContext(), timelineViewPresenter);
-        recyclerView.setAdapter(timelineAdapter);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.invalidate();
-    }
-
-    @Override
-    public void onRefresh() {
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        getPosts();
-        swipeRefreshLayout.setRefreshing(false);
-        timelineAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -159,7 +174,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        getPosts();
+                        activeNetwork = connectivityManager.getActiveNetworkInfo();
+                        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+                        timelineViewPresenter.loadPosts(isConnected);
                         setAdapterAndGetRecyclerView();
                         timelineAdapter.notifyDataSetChanged();
                     }

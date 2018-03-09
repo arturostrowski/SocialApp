@@ -8,6 +8,7 @@ public interface TimelineViewContracts {
 
     interface TimelineView{
         void showToast(String message);
+        void showPosts();
         void startProfileActivity(String userId);
         void startFullScreenPicture(String imageUrl);
         void startCommentsActivity(String postId);
@@ -15,7 +16,7 @@ public interface TimelineViewContracts {
     }
 
     interface TimelineViewPresenter{
-        void loadPosts();
+        void loadPosts(boolean isNetworkConnection);
         void onNameTextViewClick(String userId);
         void onUserImageViewClick(String userId);
         void onImageViewClick(String imageUrl);

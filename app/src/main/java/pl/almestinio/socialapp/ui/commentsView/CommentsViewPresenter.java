@@ -19,6 +19,16 @@ public class CommentsViewPresenter implements CommentsViewContracts.CommentsView
     }
 
     @Override
+    public void loadComments(boolean isNetworkConnection, String postId) {
+        if(isNetworkConnection){
+            commentsView.showToast("Load comments");
+            commentsView.showComments(postId);
+        }else{
+            commentsView.showToast("Brak polaczenia z internetem");
+        }
+    }
+
+    @Override
     public void onNameTextViewClick(String userId) {
         commentsView.showToast("onNameTextViewClick");
         commentsView.startUserProfileActivity(userId);

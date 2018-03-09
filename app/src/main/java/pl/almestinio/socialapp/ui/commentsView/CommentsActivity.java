@@ -1,5 +1,8 @@
 package pl.almestinio.socialapp.ui.commentsView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -45,6 +48,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
     private CommentsViewContracts.CommentsViewPresenter commentsViewPresenter;
 
     private Bundle bundle;
+    private String bundleStringPostId;
+
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo activeNetwork;
+    private boolean isConnected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +60,11 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
         setContentView(R.layout.activity_comments);
         ButterKnife.bind(this);
         bundle = getIntent().getExtras();
+        bundleStringPostId = bundle.getString("postid");
 
+        connectivityManager = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        activeNetwork = connectivityManager.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewComments);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -64,11 +76,33 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
         buttonWriteComment.setOnClickListener(v -> commentsViewPresenter.onWriteCommentButtonClick(bundle.getString("postid"), User.getUserId(), editTextAddComment.getText().toString()));
 
-        getComments(bundle.getString("postid"));
+        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
         setAdapterAndGetRecyclerView();
     }
 
-    private void getComments(String postId){
+    private void setAdapterAndGetRecyclerView(){
+        commentsAdapter = new CommentsAdapter(commentsList, this, commentsViewPresenter);
+        recyclerView.setAdapter(commentsAdapter);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.invalidate();
+    }
+
+    @Override
+    public void startUserProfileActivity(String userId) {
+//        startActivity(new Intent(this, ProfileActivity.class).putExtra("userid", userId));
+    }
+
+    @Override
+    public void refreshView() {
+        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
+        editTextAddComment.setText("");
+        setAdapterAndGetRecyclerView();
+        commentsAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showComments(String postId) {
         commentsList.clear();
         try {
             RestClient.getClient().requestComments(postId).enqueue(new Callback<Comments>() {
@@ -91,27 +125,6 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
         }
     }
 
-    private void setAdapterAndGetRecyclerView(){
-        commentsAdapter = new CommentsAdapter(commentsList, this, commentsViewPresenter);
-        recyclerView.setAdapter(commentsAdapter);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.invalidate();
-    }
-
-    @Override
-    public void startUserProfileActivity(String userId) {
-//        startActivity(new Intent(this, ProfileActivity.class).putExtra("userid", userId));
-    }
-
-    @Override
-    public void refreshView() {
-        getComments(bundle.getString("postid"));
-        editTextAddComment.setText("");
-        setAdapterAndGetRecyclerView();
-        commentsAdapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -123,7 +136,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        getComments(bundle.getString("postid"));
+        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
         swipeRefreshLayout.setRefreshing(false);
         commentsAdapter.notifyDataSetChanged();
     }
