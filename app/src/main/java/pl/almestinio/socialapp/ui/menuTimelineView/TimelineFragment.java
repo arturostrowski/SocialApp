@@ -30,6 +30,7 @@ import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
 import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
 import pl.almestinio.socialapp.ui.fullscreenpictureView.FullScreenPictureActivity;
+import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -132,7 +133,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void startProfileActivity(String userId) {
-//        startActivity(new Intent(getActivity(), ProfileActivity.class).putExtra("userid", userId));
+        startActivity(new Intent(getActivity(), ProfileActivity.class).putExtra("userid", userId));
     }
 
     @Override

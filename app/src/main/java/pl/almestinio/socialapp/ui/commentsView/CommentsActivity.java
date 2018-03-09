@@ -1,6 +1,7 @@
 package pl.almestinio.socialapp.ui.commentsView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import pl.almestinio.socialapp.http.comment.Comments;
 import pl.almestinio.socialapp.http.comment.Post;
 import pl.almestinio.socialapp.http.comment.Post_;
 import pl.almestinio.socialapp.model.User;
+import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +76,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
         commentsViewPresenter = new CommentsViewPresenter(this);
 
-        buttonWriteComment.setOnClickListener(v -> commentsViewPresenter.onWriteCommentButtonClick(bundle.getString("postid"), User.getUserId(), editTextAddComment.getText().toString()));
+        buttonWriteComment.setOnClickListener(v -> commentsViewPresenter.onWriteCommentButtonClick(bundleStringPostId, User.getUserId(), editTextAddComment.getText().toString()));
 
         commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
         setAdapterAndGetRecyclerView();
@@ -89,7 +91,7 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
     @Override
     public void startUserProfileActivity(String userId) {
-//        startActivity(new Intent(this, ProfileActivity.class).putExtra("userid", userId));
+        startActivity(new Intent(this, ProfileActivity.class).putExtra("userid", userId));
     }
 
     @Override

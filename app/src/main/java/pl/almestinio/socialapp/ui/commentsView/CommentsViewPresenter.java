@@ -37,6 +37,7 @@ public class CommentsViewPresenter implements CommentsViewContracts.CommentsView
     @Override
     public void onPhotoImageViewClick(String userId) {
         commentsView.showToast("onPhotoImageViewClick");
+        commentsView.startUserProfileActivity(userId);
     }
 
     @Override

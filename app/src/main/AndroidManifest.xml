@@ -34,6 +34,7 @@
         </activity>
         <activity android:name=".ui.fullscreenpictureView.FullScreenPictureActivity"></activity>
         <activity android:name=".ui.commentsView.CommentsActivity"></activity>
+        <activity android:name=".ui.profileView.ProfileActivity"></activity>
     </application>
 
 </manifest>
