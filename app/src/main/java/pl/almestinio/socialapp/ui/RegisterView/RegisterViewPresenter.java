@@ -46,6 +46,8 @@ public class RegisterViewPresenter implements RegisterViewContracts.RegisterView
                 public void onFailure(Call<Users> call, Throwable t) {
                 }
             });
+        }else if(fullName.isEmpty() || username.isEmpty() || password.isEmpty()){
+            registerView.showToast("Musisz wypelnic wszystkie pola");
         }
 
     }

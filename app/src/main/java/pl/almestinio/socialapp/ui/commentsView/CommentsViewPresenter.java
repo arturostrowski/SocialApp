@@ -12,7 +12,7 @@ import retrofit2.Response;
 
 public class CommentsViewPresenter implements CommentsViewContracts.CommentsViewPresenter {
 
-    CommentsViewContracts.CommentsView commentsView;
+    private CommentsViewContracts.CommentsView commentsView;
 
     public CommentsViewPresenter(CommentsViewContracts.CommentsView commentsView){
         this.commentsView = commentsView;

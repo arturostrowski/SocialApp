@@ -20,8 +20,10 @@ import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.SectionPagerAdapter;
 import pl.almestinio.socialapp.ui.createPostView.CreatePostActivity;
+import pl.almestinio.socialapp.ui.menuSettingsView.SettingsFragment;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineFragment;
 import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
+import pl.almestinio.socialapp.ui.searchFriendsView.SearchFriendsActivity;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -59,7 +61,7 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
 
         sectionPagerAdapter.addFragment(new TimelineFragment());
         sectionPagerAdapter.addFragment(new RegisterFragment());
-        sectionPagerAdapter.addFragment(new RegisterFragment());
+        sectionPagerAdapter.addFragment(new SettingsFragment());
 
         viewPager.setAdapter(sectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -146,6 +148,6 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
 
     @Override
     public void startSearchFriendActivity(String query) {
-//        startActivity(new Intent(this, MenuActivity.class).putExtra("users", query));
+        startActivity(new Intent(this, SearchFriendsActivity.class).putExtra("users", query));
     }
 }

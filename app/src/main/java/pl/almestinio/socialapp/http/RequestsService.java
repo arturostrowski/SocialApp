@@ -34,6 +34,8 @@ public interface RequestsService {
     @GET("test.php")
     Call<Users> requestUsers();
     @GET("test.php")
+    Call<Users> requestUsers2(@Query("users") String user_name);
+    @GET("test.php")
     Call<UserPhoto> requestUserPhoto(@Query("user_pic") String id);
     @GET("test.php")
     Call<UserPhotoCover> requestUserPhotoCover(@Query("user_cover_pic") String id);

@@ -1,5 +1,6 @@
 package pl.almestinio.socialapp.ui.loginView;
 
+import pl.almestinio.socialapp.database.DatabaseUser;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.user.Users;
 import pl.almestinio.socialapp.model.User;
@@ -29,17 +30,12 @@ public class LoginViewPresenter implements LoginViewContracts.LoginViewPresenter
                 public void onResponse(Call<Users> call, Response<Users> response) {
                     for(pl.almestinio.socialapp.http.user.User user : response.body().getUsers()){
                         if(user.getUser().getEmail().equals(username) && user.getUser().getPassword().equals(password)){
-//                            DatabaseUser.deleteAllCategories();
-//                            if(DatabaseUser.getCategories().isEmpty()){
-//                                DatabaseUser.addOrUpdateCategories(new User(user.getUser().getUserId()));
-//                            }else{
-//                                DatabaseUser.updateCategories(user.getUser().getUserId());
-//                            }
-//                            User.setUserId(user.getUser().getUserId());
+                            if(DatabaseUser.getCategories().isEmpty()){
+                                DatabaseUser.addOrUpdateCategories(new User(user.getUser().getUserId()));
+                            }else{
+                                DatabaseUser.updateCategories(user.getUser().getUserId());
+                            }
                             User.setUserId(user.getUser().getUserId());
-//                            changeStatus();
-//                            Intent intent = new Intent(getActivity(), MenuActivity.class);
-//                            startActivity(intent);
                             loginView.showToast("Poprawne dane!");
                             loginView.startMenuActivity();
                         }

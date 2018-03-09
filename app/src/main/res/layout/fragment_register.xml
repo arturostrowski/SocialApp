@@ -147,7 +147,7 @@
 
     <EditText
         android:id="@+id/editTextRegisterPassword"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:ems="10"
@@ -159,11 +159,13 @@
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
         app:layout_constraintLeft_toRightOf="@+id/imageViewRegisterPasswordIcon"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/buttonRegister" />
 
     <EditText
         android:id="@+id/editTextRegisterUsername"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ems="10"
@@ -175,11 +177,13 @@
         android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toTopOf="@+id/textViewRegisterFullName"
         app:layout_constraintLeft_toRightOf="@+id/imageViewRegisterUsername"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/editTextRegisterFullName" />
 
     <EditText
         android:id="@+id/editTextRegisterFullName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:layout_marginStart="8dp"
@@ -191,6 +195,8 @@
         android:textColorHint="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/textViewRegisterPassword"
         app:layout_constraintLeft_toRightOf="@+id/imageViewRegisterFullName"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/editTextRegisterPassword" />
 
 </android.support.constraint.ConstraintLayout>
