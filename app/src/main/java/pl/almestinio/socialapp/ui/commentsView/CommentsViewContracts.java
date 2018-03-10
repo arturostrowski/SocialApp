@@ -10,6 +10,7 @@ public interface CommentsViewContracts {
         void startUserProfileActivity(String userId);
         void refreshView();
         void showComments(String postId);
+        void showDeletePostAlert(String commentId, String postId);
         void showToast(String message);
     }
 
@@ -17,7 +18,7 @@ public interface CommentsViewContracts {
         void loadComments(boolean isNetworkConnection, String postId);
         void onNameTextViewClick(String userId);
         void onPhotoImageViewClick(String userId);
-        void onDeleteImageViewClick(String commentId);
+        void onDeleteImageViewClick(String commentId, String postId);
         void onWriteCommentButtonClick(String postId, String userId, String message);
     }
 

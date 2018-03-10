@@ -1,12 +1,15 @@
 package pl.almestinio.socialapp.ui.commentsView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.CommentsAdapter;
+import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.comment.Comments;
 import pl.almestinio.socialapp.http.comment.Post;
@@ -128,6 +132,43 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
     }
 
     @Override
+    public void showDeletePostAlert(String commentId, String postId) {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Holo_Dialog);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Usun komentarz")
+                .setMessage("Czy chcesz usunac ten komentarz?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+
+                            RestClient.getClient().deleteComment(commentId).enqueue(new Callback<Pojodemo>() {
+                                @Override
+                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<Pojodemo> call, Throwable t) {
+
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        commentsViewPresenter.loadComments(true, postId);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {}
+                }).show();
+    }
+
+    @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -139,3 +180,4 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
     }
 
 }
+

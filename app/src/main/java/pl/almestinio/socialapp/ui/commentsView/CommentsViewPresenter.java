@@ -41,8 +41,9 @@ public class CommentsViewPresenter implements CommentsViewContracts.CommentsView
     }
 
     @Override
-    public void onDeleteImageViewClick(String commentId) {
+    public void onDeleteImageViewClick(String commentId, String postId) {
         commentsView.showToast("onDeleteImageViewClick");
+        commentsView.showDeletePostAlert(commentId, postId);
     }
 
     @Override

@@ -74,7 +74,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         holder.textViewCommentUserName.setOnClickListener(v -> commentsViewPresenter.onNameTextViewClick(post.getUserId()));
         holder.imageViewCommentUserPhoto.setOnClickListener(v -> commentsViewPresenter.onPhotoImageViewClick(post.getUserId()));
-        holder.imageViewDeleteComment.setOnClickListener(v -> commentsViewPresenter.onDeleteImageViewClick(post.getCommentId()));
+        holder.imageViewDeleteComment.setOnClickListener(v -> commentsViewPresenter.onDeleteImageViewClick(post.getCommentId(), post.getPostId()));
 
     }
 

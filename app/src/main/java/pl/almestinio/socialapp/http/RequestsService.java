@@ -62,6 +62,8 @@ public interface RequestsService {
     @GET("delete.php")
     Call<Pojodemo> deleteLike(@Query("post_id") String post_id,
                               @Query("user_id") String user_id);
+    @GET("deletecomment.php")
+    Call<Pojodemo> deleteComment(@Query("comment_id") String comment_id);
 
     @GET("createpost.php")
     Call<Pojodemo> createPost(@Query("user_id") String user_id,
