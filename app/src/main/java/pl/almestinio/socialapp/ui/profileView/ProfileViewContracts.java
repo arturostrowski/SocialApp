@@ -12,6 +12,7 @@ public interface ProfileViewContracts {
         void showUserPhoto(String userId);
         void showUserPhotoCover(String userId);
         void showUserName(String userId);
+        void showUserFriendOption(String userId, String userTwoId);
         void showUserGallery(String userId);
         void showUserPosts(String userId);
         void likePost(String postId);
@@ -20,6 +21,10 @@ public interface ProfileViewContracts {
         void startCommentsActivity(String postId);
         void showDeletePostAlert(String postId);
         void setAdapterAndGetRecyclerView();
+
+        void addFriend(String userId, String userTwoId, String actionUserId);
+        void acceptFriend(String userId, String userTwoId);
+        void removeFriend(String userId);
 
         void startFullScreenPicture(String imageUrl);
         void changePhoto(int id);
@@ -35,6 +40,10 @@ public interface ProfileViewContracts {
         void onLikeButtonClick(String postId, boolean isLiked);
         void onCommentButtonClick(String postId);
         void onDeleteImageViewClick(String postId);
+
+        void onFriendsImageOrTextViewClick(boolean isFriend, String userId, String userTwoId, String actionUserId);
+        void onFriendsImageOrTextViewClick(boolean isFriend, String userId, String userTwoId);
+
     }
 
 }

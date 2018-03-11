@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.profileView;
 
+import pl.almestinio.socialapp.model.User;
+
 /**
  * Created by mesti193 on 3/9/2018.
  */
@@ -20,6 +22,7 @@ public class ProfileViewPresenter implements ProfileViewContracts.ProfileViewPre
         profileView.showUserPhoto(userId);
         profileView.showUserPhotoCover(userId);
         profileView.showUserChangePicture(userId);
+        profileView.showUserFriendOption(User.getUserId(), userId);
         profileView.showUserGallery(userId);
         profileView.showUserPosts(userId);
         profileView.setAdapterAndGetRecyclerView();
@@ -73,5 +76,28 @@ public class ProfileViewPresenter implements ProfileViewContracts.ProfileViewPre
     public void onDeleteImageViewClick(String postId) {
         profileView.showToast("DeletePostClicked");
         profileView.showDeletePostAlert(postId);
+    }
+
+    @Override
+    public void onFriendsImageOrTextViewClick(boolean isFriend, String userId, String userTwoId, String actionUserId) {
+        if(isFriend){
+            profileView.showToast("Usunieto uzytkownika z grona znajomych.");
+            profileView.removeFriend(userId);
+        }else{
+            profileView.showToast("Wyslano zaproszenie do grona znajomych.");
+            profileView.addFriend(userId, userTwoId, actionUserId);
+        }
+    }
+
+    @Override
+    public void onFriendsImageOrTextViewClick(boolean isFriend, String userId, String userTwoId) {
+        if(isFriend){
+            profileView.showToast("Dodano uzytkownika z grona znajomych.");
+            profileView.acceptFriend(userId, userTwoId);
+        }else{
+            profileView.showToast("Usunieto uzytkownika z grona znajomych.");
+            profileView.removeFriend(userId);
+        }
+
     }
 }

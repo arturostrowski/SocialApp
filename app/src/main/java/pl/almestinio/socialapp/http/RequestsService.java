@@ -3,6 +3,7 @@ package pl.almestinio.socialapp.http;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pl.almestinio.socialapp.http.comment.Comments;
+import pl.almestinio.socialapp.http.friend.UserFriend;
 import pl.almestinio.socialapp.http.post.Posts;
 import pl.almestinio.socialapp.http.poststatus.PostStatus;
 import pl.almestinio.socialapp.http.user.Users;
@@ -25,8 +26,13 @@ public interface RequestsService {
     Call<Users> addUser(@Query("name") String name,
                         @Query("email") String username,
                         @Query("password") String password);
+    @GET("friends.php")
+    Call<UserFriend> requestFriends(@Query("user_id") String user_id);
     @GET("test.php")
     Call<Posts> requestPosts(@Query("allposts") String posts);
+    @GET("test.php")
+    Call<Posts> requestPosts(@Query("posts") String posts,
+                             @Query("friends") String friends);
     @GET("test.php")
     Call<Posts> requestPostsUser(@Query("post") String post);
     @GET("test.php")
@@ -82,4 +88,18 @@ public interface RequestsService {
     @GET("changepiccover.php")
     Call<UserPhoto> changeUserPhotoCover(@Query("user_cover_pic") String user_id,
                                          @Query("user_pic") String user_pic);
+
+    @GET("friend.php")
+    Call<UserFriend> requestFriend(@Query("user_one_id") String user_one_id,
+                                   @Query("user_two_id") String user_two_id);
+    @GET("addfriend.php")
+    Call<UserFriend> addFriend(@Query("user_one_id") String user_one_id,
+                               @Query("user_two_id") String user_two_id,
+                               @Query("action_user_id") String action_user_id);
+    @GET("acceptfriend.php")
+    Call<UserFriend> acceptFriend(@Query("user_accept_friend") String user_accept_friend,
+                                  @Query("user_id") String user_id);
+
+    @GET("deletefriend.php")
+    Call<UserFriend> deleteFriend(@Query("relationship_id") String relationship_id);
 }

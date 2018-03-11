@@ -13,9 +13,15 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
+    public void loadFriendsId() {
+        timelineView.getFriendsId();
+    }
+
+    @Override
     public void loadPosts(boolean isNetworkConnection) {
         if(isNetworkConnection){
             timelineView.showToast("Load post");
+//            timelineView.getFriendsId();
             timelineView.showPosts();
             timelineView.setAdapterAndGetRecyclerView();
         }else{

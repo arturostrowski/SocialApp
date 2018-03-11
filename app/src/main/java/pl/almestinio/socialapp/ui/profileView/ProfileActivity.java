@@ -45,6 +45,8 @@ import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RequestsService;
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.UploadObject;
+import pl.almestinio.socialapp.http.friend.Friend;
+import pl.almestinio.socialapp.http.friend.UserFriend;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
@@ -79,6 +81,13 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     @BindView(R.id.buttonEditUserPhotoCover)
     Button buttonEditUserPhotoCover;
 
+    @BindView(R.id.viewProfileOptions)
+    View viewProfileOptions;
+    @BindView(R.id.imageViewFriends)
+    ImageView imageViewFriends;
+    @BindView(R.id.textViewFriends)
+    TextView textViewFriends;
+
     private Transformation transformation = new RoundedTransformationBuilder()
             .borderColor(Color.BLACK)
             .borderWidthDp(2)
@@ -109,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile_test);
         ButterKnife.bind(this);
         bundle = getIntent().getExtras();
         bundleStringUserId = bundle.getString("userid");
@@ -209,6 +218,70 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void showUserFriendOption(String userId, String userTwoId) {
+        String userOne;
+        String userTwo;
+
+        if(Integer.parseInt(userId)<Integer.parseInt(userTwoId)){
+            userOne = userId;
+            userTwo = userTwoId;
+        }else{
+            userOne = userTwoId;
+            userTwo = userId;
+        }
+        Log.e("USERONE", userOne);
+        Log.e("USERTWO", userTwo);
+        if(userOne.equals(userTwo)) {
+            viewProfileOptions.setVisibility(View.GONE);
+            imageViewFriends.setVisibility(View.GONE);
+            textViewFriends.setVisibility(View.GONE);
+        }else{
+            try{
+
+                RestClient.getClient().requestFriend(userOne, userTwo).enqueue(new Callback<UserFriend>() {
+                    @Override
+                    public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+
+                        if(response.body().getFriends().isEmpty()){
+                            imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend_add);
+                            textViewFriends.setText("Dodaj do znajomych");
+                            imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
+                        }
+
+                        for(Friend friend : response.body().getFriends()){
+                            if(friend.getFriend().getStatus().equals("0")){
+                                if(friend.getFriend().getActionUserId().equals(User.getUserId())){
+                                    imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
+                                    textViewFriends.setText("Oczekiwanie");
+                                    imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
+                                }else{
+                                    imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
+                                    textViewFriends.setText("Akceptuj");
+                                    imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
+                                }
+                            }else if(friend.getFriend().getStatus().equals("1")){
+                                imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
+                                textViewFriends.setText("Friends");
+                                imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     @Override
@@ -368,6 +441,73 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
         recyclerViewPosts.setAdapter(profilePostsAdapter);
         recyclerViewPosts.setNestedScrollingEnabled(false);
         recyclerViewPosts.invalidate();
+    }
+
+    @Override
+    public void addFriend(String userId, String userTwoId, String actionUserId) {
+        try{
+            RestClient.getClient().addFriend(userId, userTwoId, actionUserId).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+
+            profileViewPresenter.loadUserProfile(bundleStringUserId);
+
+//            finish();
+//            startActivity(getIntent());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void acceptFriend(String userId, String userTwoId) {
+        try{
+            RestClient.getClient().acceptFriend(userId, userTwoId).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+
+                }
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+            profileViewPresenter.loadUserProfile(bundleStringUserId);
+//            finish();
+//            startActivity(getIntent());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeFriend(String userId) {
+        try{
+            RestClient.getClient().deleteFriend(userId).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+            profileViewPresenter.loadUserProfile(bundleStringUserId);
+//            finish();
+//            startActivity(getIntent());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

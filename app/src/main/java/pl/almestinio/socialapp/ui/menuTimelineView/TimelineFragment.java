@@ -1,10 +1,7 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +23,7 @@ import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
 import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
+import pl.almestinio.socialapp.http.friend.UserFriend;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
 import pl.almestinio.socialapp.http.post.Posts;
@@ -33,6 +31,7 @@ import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
 import pl.almestinio.socialapp.ui.fullScreenPictureView.FullScreenPictureActivity;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
+import pl.almestinio.socialapp.utils.NetworkConnection;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,13 +44,13 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private TimelineAdapter timelineAdapter;
     private List<Post_> postsList = new ArrayList<Post_>();
+    private List<String> tt = new ArrayList<String>();
+    private String relationshipIds;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
-    private ConnectivityManager connectivityManager;
-    private NetworkInfo activeNetwork;
     private boolean isConnected;
 
     @Nullable
@@ -61,9 +60,8 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         setHasOptionsMenu(true);
 
         timelineViewPresenter = new TimelineViewPresenter(this);
-        connectivityManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        isConnected = NetworkConnection.isNetworkConnection(getContext());
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -72,7 +70,8 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        timelineViewPresenter.loadPosts(isConnected);
+        timelineViewPresenter.loadFriendsId();
+//        timelineViewPresenter.loadPosts(isConnected);
         return view;
     }
 
@@ -86,9 +85,11 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        activeNetwork = connectivityManager.getActiveNetworkInfo();
-        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        timelineViewPresenter.loadPosts(isConnected);
+        relationshipIds="";
+        tt.clear();
+        isConnected = NetworkConnection.isNetworkConnection(getContext());
+        timelineViewPresenter.loadFriendsId();
+//        timelineViewPresenter.loadPosts(isConnected);
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -98,10 +99,42 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void getFriendsId() {
+        relationshipIds="";
+        tt.clear();
+        try {
+            RestClient.getClient().requestFriends(User.getUserId()).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+                    for(int i =0; i< response.body().getFriends().size(); i++){
+                        if(response.body().getFriends().get(i).getFriend().getUserOneId().equals(User.getUserId())) {
+                            tt.add(i, response.body().getFriends().get(i).getFriend().getUserTwoId());
+                        }else if(!response.body().getFriends().get(i).getFriend().getUserOneId().equals(User.getUserId())){
+                            tt.add(i, response.body().getFriends().get(i).getFriend().getUserOneId());
+                        }
+                    }
+                    relationshipIds = User.getUserId();
+                    for(String test : tt){
+                        relationshipIds = relationshipIds + "," + test;
+                    }
+
+                    timelineViewPresenter.loadPosts(isConnected);
+                }
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void showPosts() {
         postsList.clear();
         try{
-            RestClient.getClient().requestPosts("").enqueue(new Callback<Posts>() {
+            RestClient.getClient().requestPosts("", relationshipIds).enqueue(new Callback<Posts>() {
                 @Override
                 public void onResponse(Call<Posts> call, Response<Posts> response) {
                     for(Post posts : response.body().getPosts()){
@@ -205,9 +238,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        activeNetwork = connectivityManager.getActiveNetworkInfo();
-                        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
+                        isConnected = NetworkConnection.isNetworkConnection(getContext());
                         timelineViewPresenter.loadPosts(isConnected);
                         setAdapterAndGetRecyclerView();
                         timelineAdapter.notifyDataSetChanged();
