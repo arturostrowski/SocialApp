@@ -20,9 +20,9 @@ import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.SectionPagerAdapter;
 import pl.almestinio.socialapp.ui.createPostView.CreatePostActivity;
+import pl.almestinio.socialapp.ui.menuInvitationsToFriendsView.InvitationsFragment;
 import pl.almestinio.socialapp.ui.menuSettingsView.SettingsFragment;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineFragment;
-import pl.almestinio.socialapp.ui.registerView.RegisterFragment;
 import pl.almestinio.socialapp.ui.searchFriendsView.SearchFriendsActivity;
 
 /**
@@ -60,7 +60,7 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
         sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
 
         sectionPagerAdapter.addFragment(new TimelineFragment());
-        sectionPagerAdapter.addFragment(new RegisterFragment());
+        sectionPagerAdapter.addFragment(new InvitationsFragment());
         sectionPagerAdapter.addFragment(new SettingsFragment());
 
         viewPager.setAdapter(sectionPagerAdapter);

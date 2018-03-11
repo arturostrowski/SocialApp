@@ -92,6 +92,9 @@ public interface RequestsService {
     @GET("friend.php")
     Call<UserFriend> requestFriend(@Query("user_one_id") String user_one_id,
                                    @Query("user_two_id") String user_two_id);
+    @GET("test.php")
+    Call<UserFriend> requestNotConfirmedFriends(@Query("user_invited_friends") String user_invited_friends);
+
     @GET("addfriend.php")
     Call<UserFriend> addFriend(@Query("user_one_id") String user_one_id,
                                @Query("user_two_id") String user_two_id,

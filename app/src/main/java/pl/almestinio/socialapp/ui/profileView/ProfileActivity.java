@@ -249,6 +249,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                             imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend_add);
                             textViewFriends.setText("Dodaj do znajomych");
                             imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
+                            textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
                         }
 
                         for(Friend friend : response.body().getFriends()){
@@ -257,15 +258,18 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                                     imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
                                     textViewFriends.setText("Oczekiwanie");
                                     imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
+                                    textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
                                 }else{
                                     imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
                                     textViewFriends.setText("Akceptuj");
                                     imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
+                                    textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
                                 }
                             }else if(friend.getFriend().getStatus().equals("1")){
                                 imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
                                 textViewFriends.setText("Friends");
                                 imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
+                                textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
                             }
                         }
                     }
