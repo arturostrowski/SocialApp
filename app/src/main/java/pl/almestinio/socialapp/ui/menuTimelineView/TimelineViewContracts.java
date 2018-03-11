@@ -10,6 +10,7 @@ public interface TimelineViewContracts {
         void showToast(String message);
         void getFriendsId();
         void showPosts();
+        void showPosts(int page);
         void likePost(String postId);
         void unlikePost(String postId);
         void startProfileActivity(String userId);
@@ -20,8 +21,10 @@ public interface TimelineViewContracts {
     }
 
     interface TimelineViewPresenter{
+        void doToast(String message);
         void loadFriendsId();
         void loadPosts(boolean isNetworkConnection);
+        void loadPosts(boolean isNetworkConnection, int page);
         void onNameTextViewClick(String userId);
         void onUserImageViewClick(String userId);
         void onImageViewClick(String imageUrl);

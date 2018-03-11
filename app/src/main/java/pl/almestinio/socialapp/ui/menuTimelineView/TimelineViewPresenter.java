@@ -13,8 +13,14 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
     }
 
     @Override
+    public void doToast(String message) {
+        timelineView.showToast(message);
+    }
+
+    @Override
     public void loadFriendsId() {
         timelineView.getFriendsId();
+        timelineView.setAdapterAndGetRecyclerView();
     }
 
     @Override
@@ -24,6 +30,17 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
 //            timelineView.getFriendsId();
             timelineView.showPosts();
             timelineView.setAdapterAndGetRecyclerView();
+        }else{
+            timelineView.showToast("Brak polaczenia z internetem");
+        }
+    }
+
+    @Override
+    public void loadPosts(boolean isNetworkConnection, int page) {
+        if(isNetworkConnection){
+            timelineView.showToast("Load post");
+            timelineView.showPosts(page);
+//            timelineView.setAdapterAndGetRecyclerView();
         }else{
             timelineView.showToast("Brak polaczenia z internetem");
         }

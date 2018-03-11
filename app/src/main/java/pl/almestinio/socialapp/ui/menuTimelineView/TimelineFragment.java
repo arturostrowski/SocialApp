@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
 import pl.almestinio.socialapp.ui.fullScreenPictureView.FullScreenPictureActivity;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
+import pl.almestinio.socialapp.utils.EndlessRecyclerOnScrollListener;
 import pl.almestinio.socialapp.utils.NetworkConnection;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,11 +50,20 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     private List<String> tt = new ArrayList<String>();
     private String relationshipIds;
     private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private EndlessRecyclerOnScrollListener scrollListener;
 
     private TimelineViewContracts.TimelineViewPresenter timelineViewPresenter;
 
     private boolean isConnected;
+
+    private boolean isScrolling = false;
+    int currentItems, totalItems, scrollOutItems;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+    int actuallyPage = 0;
 
     @Nullable
     @Override
@@ -67,8 +79,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         swipeRefreshLayout.setOnRefreshListener(this);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewTimelinePosts);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        layoutManager = new LinearLayoutManager(getContext());
+
+
+
 
         timelineViewPresenter.loadFriendsId();
 //        timelineViewPresenter.loadPosts(isConnected);
@@ -79,8 +93,114 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void setAdapterAndGetRecyclerView(){
         timelineAdapter = new TimelineAdapter(postsList, getContext(), timelineViewPresenter);
         recyclerView.setAdapter(timelineAdapter);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.invalidate();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.i("SCROLL", "onScrollStateChanged");
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    isScrolling = true;
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentItems = layoutManager.getChildCount();
+                scrollOutItems = layoutManager.findFirstVisibleItemPosition();
+                totalItems = layoutManager.getItemCount();
+
+                if(isScrolling && (currentItems+scrollOutItems == totalItems)){
+                    isScrolling = false;
+                    fetchData();
+                    Log.i("SCROLL", "onScrolled");
+                }
+            }
+        });
+
+//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+//                Log.i("PAGE", page+"");
+//                fetchData(page);
+//            }
+//        });
+//        scrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+//
+//            }
+//        };
+
+//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+//            @Override
+//            public void onLoadMore() {
+//                fetchData();
+//            }
+//        });
+
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+//                    loading = true;
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+////                currentItems = layoutManager.getChildCount();
+////                totalItems = layoutManager.getItemCount();
+////                scrollOutItems = layoutManager.findFirstVisibleItemPosition();
+////
+////
+////
+////                if(isScrolling && (currentItems+scrollOutItems ==totalItems)){
+////                    isScrolling = false;
+////                    fetchData();
+////                }
+//
+////                if(layoutManager.findLastCompletelyVisibleItemPosition() == timelineAdapter.getItemCount() -1){
+////                    fetchData();
+////                }
+////                if(dy > 0){
+////                    visibleItemCount = layoutManager.getChildCount();
+////                    totalItemCount = layoutManager.getItemCount();
+////                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+////
+////                    if (loading)
+////                    {
+////                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+////                        {
+////                            loading = false;
+////                            Log.v("...", "Last Item Wow !");
+////                            //Do pagination.. i.e. fetch new data
+////                            fetchData();
+////                        }
+////                    }
+////                }
+//            }
+//        });
+
+    }
+
+    private void fetchData(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    timelineViewPresenter.loadPosts(isConnected, actuallyPage);
+                }catch (Exception e){
+
+                }
+            }
+        }, 10);
     }
 
     @Override
@@ -88,8 +208,9 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         relationshipIds="";
         tt.clear();
         isConnected = NetworkConnection.isNetworkConnection(getContext());
+        actuallyPage = 0;
+        postsList.clear();
         timelineViewPresenter.loadFriendsId();
-//        timelineViewPresenter.loadPosts(isConnected);
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -118,7 +239,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                         relationshipIds = relationshipIds + "," + test;
                     }
 
-                    timelineViewPresenter.loadPosts(isConnected);
+                    timelineViewPresenter.loadPosts(isConnected, actuallyPage);
                 }
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
@@ -148,6 +269,35 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                 @Override
                 public void onFailure(Call<Posts> call, Throwable t) {}
             });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void showPosts(int page) {
+//        postsList.clear();
+        try{
+            RestClient.getClient().requestPosts(relationshipIds, page).enqueue(new Callback<Posts>() {
+                @Override
+                public void onResponse(Call<Posts> call, Response<Posts> response) {
+                    if(response.body().getPosts().isEmpty()){
+                        timelineViewPresenter.doToast("Koniec aktywnosci");
+                    }else{
+                        for(Post posts : response.body().getPosts()){
+
+                            postsList.add(new Post_(posts.getPost().getPostId().toString(), posts.getPost().getUserId().toString(), posts.getPost().getPostTxt().toString(), posts.getPost().getPostPic().toString(), posts.getPost().getPostTime().toString(), posts.getPost().getPriority().toString()));
+                            try{
+                                timelineAdapter.notifyDataSetChanged();
+                                actuallyPage++;
+                            }catch (Exception e){}
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<Posts> call, Throwable t) {}
+            });
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -239,7 +389,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                             e.printStackTrace();
                         }
                         isConnected = NetworkConnection.isNetworkConnection(getContext());
-                        timelineViewPresenter.loadPosts(isConnected);
+                        timelineViewPresenter.loadPosts(isConnected, actuallyPage);
                         setAdapterAndGetRecyclerView();
                         timelineAdapter.notifyDataSetChanged();
                     }

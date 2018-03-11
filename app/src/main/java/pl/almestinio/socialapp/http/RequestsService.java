@@ -34,6 +34,9 @@ public interface RequestsService {
     Call<Posts> requestPosts(@Query("posts") String posts,
                              @Query("friends") String friends);
     @GET("test.php")
+    Call<Posts> requestPosts(@Query("friends") String friends,
+                             @Query("page") int page);
+    @GET("test.php")
     Call<Posts> requestPostsUser(@Query("post") String post);
     @GET("test.php")
     Call<Users> requestUser(@Query("user") String id);

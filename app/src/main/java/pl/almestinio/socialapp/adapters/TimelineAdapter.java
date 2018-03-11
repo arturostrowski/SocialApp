@@ -59,14 +59,14 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     public TimelineAdapter(List<Post_> postsList, Context context, TimelineViewContracts.TimelineViewPresenter timelineViewPresenter){
         this.postsList = postsList;
-        notifyItemRangeChanged(0, postsList.size());
+//        notifyItemRangeChanged(0, postsList.size());
         this.context = context;
         this.timelineViewPresenter = timelineViewPresenter;
     }
 
     public TimelineAdapter(List<Post_> postsList, Context context, ProfileViewContracts.ProfileViewPresenter profileViewPresenter, int id){
         this.postsList = postsList;
-        notifyItemRangeChanged(0, postsList.size());
+//        notifyItemRangeChanged(0, postsList.size());
         this.context = context;
         this.profileViewPresenter = profileViewPresenter;
         this.id = id;
@@ -80,8 +80,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Post_ post = postsList.get(position);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Post_ post = postsList.get(position);
         holder.buttonLike.setTag("");
         holder.buttonLike.setTextColor(Color.parseColor("#AAAAAA"));
         getUserName(post, holder);
@@ -145,27 +145,34 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     }
 
     private void getUserPic(Post_ post, final ViewHolder holder){
-        RestClient.getClient().requestUserPhoto(post.getUserId()).enqueue(new Callback<UserPhoto>() {
-            @Override
-            public void onResponse(Call<UserPhoto> call, Response<UserPhoto> response) {
-                for(UsersPic userPic : response.body().getUsersPic()){
-                    if(!userPic.getUserPic().getImage().isEmpty()){
-                        Picasso.with(context).load(userPic.getUserPic().getImage()).fit().centerCrop().transform(transformation).placeholder(R.drawable.logo).into(holder.imageViewUserProfile);
+        try{
+            RestClient.getClient().requestUserPhoto(post.getUserId()).enqueue(new Callback<UserPhoto>() {
+                @Override
+                public void onResponse(Call<UserPhoto> call, Response<UserPhoto> response) {
+                    for(UsersPic userPic : response.body().getUsersPic()){
+                        if(!userPic.getUserPic().getImage().isEmpty()){
+                            Picasso.with(context).load(userPic.getUserPic().getImage()).fit().centerCrop().transform(transformation).placeholder(R.drawable.logo).into(holder.imageViewUserProfile);
+                        }
                     }
                 }
-            }
-            @Override
-            public void onFailure(Call<UserPhoto> call, Throwable t) {}
-        });
+                @Override
+                public void onFailure(Call<UserPhoto> call, Throwable t) {}
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void getCommentImage(Post_ post, final ViewHolder holder){
         try{
-            holder.imageViewCommentPhoto.setVisibility(View.VISIBLE);
-            Log.e("pic", post.getPostPic());
-            Picasso.with(context).load(post.getPostPic()).fit().centerCrop().into(holder.imageViewCommentPhoto);
+            if(post.getPostPic().isEmpty()){
+                holder.imageViewCommentPhoto.setVisibility(View.GONE);
+            }else{
+                holder.imageViewCommentPhoto.setVisibility(View.VISIBLE);
+                Log.e("pic", post.getPostPic());
+                Picasso.with(context).load(post.getPostPic()).fit().centerCrop().into(holder.imageViewCommentPhoto);
+            }
         }catch (Exception e){
-            holder.imageViewCommentPhoto.setVisibility(View.GONE);
             e.printStackTrace();
         }
     }
