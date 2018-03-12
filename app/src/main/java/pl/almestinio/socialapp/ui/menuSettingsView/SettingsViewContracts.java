@@ -10,9 +10,15 @@ public interface SettingsViewContracts {
         void showToast(String message);
         void finishActivity();
         void startMainActivity();
+        void startFriendsActivity();
+        void showProfileData(String userId);
+        void startProfileActivity(String userId);
     }
 
     interface SettingsViewPresenter{
+        void loadProfile(String userId);
+        void onProfileViewClick(String userId);
+        void onFriendsTextViewClick();
         void onClickLogoutTextView();
     }
 

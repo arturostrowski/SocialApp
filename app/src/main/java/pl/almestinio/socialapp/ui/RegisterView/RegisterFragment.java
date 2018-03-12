@@ -47,7 +47,7 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 
-        registerView = new RegisterViewPresenter(this);
+        registerView = new RegisterViewPresenter(this, getActivity());
 
         buttonRegister.setOnClickListener(v -> registerView.onRegisterButtonClick(editTextRegisterUsername.getText().toString(), editTextRegisterFullName.getText().toString(), editTextRegisterPassword.getText().toString()));
         textViewLogin.setOnClickListener(v -> registerView.onLoginTextViewClick());

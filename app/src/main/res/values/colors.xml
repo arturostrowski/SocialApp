@@ -7,6 +7,7 @@
     <color name="colorBackgroundTimeline">#eaeaea</color>
     <color name="colorGrey">#DDD</color>
     <color name="colorWhite">#FFF</color>
+    <color name="colorBlack">#000</color>
     <color name="colorPostGrey">#777</color>
     <color name="colorButtonGrey">#AAA</color>
 </resources>

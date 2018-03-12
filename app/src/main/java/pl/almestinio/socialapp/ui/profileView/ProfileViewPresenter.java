@@ -24,6 +24,8 @@ public class ProfileViewPresenter implements ProfileViewContracts.ProfileViewPre
         profileView.showUserChangePicture(userId);
         profileView.showUserFriendOption(User.getUserId(), userId);
         profileView.showUserGallery(userId);
+        profileView.showFriendsCount(userId);
+        profileView.showUserFriends(userId);
         profileView.showUserPosts(userId);
         profileView.setAdapterAndGetRecyclerView();
     }

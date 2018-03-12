@@ -39,6 +39,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pl.almestinio.socialapp.R;
+import pl.almestinio.socialapp.adapters.ProfileFriendsAdapter;
 import pl.almestinio.socialapp.adapters.ProfileGalleryAdapter;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
 import pl.almestinio.socialapp.http.Pojodemo;
@@ -85,8 +86,10 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     View viewProfileOptions;
     @BindView(R.id.imageViewFriends)
     ImageView imageViewFriends;
-    @BindView(R.id.textViewFriends)
-    TextView textViewFriends;
+    @BindView(R.id.textViewIsFriend)
+    TextView textViewIsFriend;
+    @BindView(R.id.textViewFriendsCount)
+    TextView textViewFriendsCount;
 
     private Transformation transformation = new RoundedTransformationBuilder()
             .borderColor(Color.BLACK)
@@ -97,10 +100,14 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
     private TimelineAdapter profilePostsAdapter;
     private ProfileGalleryAdapter profileGalleryAdapter;
+    private ProfileFriendsAdapter profileFriendsAdapter;
     private RecyclerView recyclerViewPosts;
     private RecyclerView recyclerViewGallery;
+    private RecyclerView recyclerViewFriends;
     private List<Post_> galleryList = new ArrayList<Post_>();
+    private List<Post_> friendsList = new ArrayList<Post_>();
     private List<Post_> postslist = new ArrayList<Post_>();
+    private int friendsCount;
 
     private Bundle bundle;
     private String bundleStringUserId;
@@ -126,13 +133,17 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container_profile);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        recyclerViewPosts = (RecyclerView) findViewById(R.id.recyclerViewProfilePosts);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerViewPosts.setLayoutManager(layoutManager);
-
         recyclerViewGallery = (RecyclerView) findViewById(R.id.recyclerViewGallery);
         RecyclerView.LayoutManager layoutManager2 = new GridLayoutManager(getApplicationContext(),2);
         recyclerViewGallery.setLayoutManager(layoutManager2);
+
+        recyclerViewFriends = (RecyclerView) findViewById(R.id.recyclerViewFriends);
+        RecyclerView.LayoutManager layoutManager1 = new GridLayoutManager(getApplicationContext(),3);
+        recyclerViewFriends.setLayoutManager(layoutManager1);
+
+        recyclerViewPosts = (RecyclerView) findViewById(R.id.recyclerViewProfilePosts);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerViewPosts.setLayoutManager(layoutManager);
 
 
         profileViewPresenter.loadUserProfile(bundleStringUserId);
@@ -237,7 +248,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
         if(userOne.equals(userTwo)) {
             viewProfileOptions.setVisibility(View.GONE);
             imageViewFriends.setVisibility(View.GONE);
-            textViewFriends.setVisibility(View.GONE);
+            textViewIsFriend.setVisibility(View.GONE);
         }else{
             try{
 
@@ -247,29 +258,29 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
                         if(response.body().getFriends().isEmpty()){
                             imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend_add);
-                            textViewFriends.setText("Dodaj do znajomych");
+                            textViewIsFriend.setText("Dodaj do znajomych");
                             imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
-                            textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
+                            textViewIsFriend.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, userOne, userTwo, User.getUserId()));
                         }
 
                         for(Friend friend : response.body().getFriends()){
                             if(friend.getFriend().getStatus().equals("0")){
                                 if(friend.getFriend().getActionUserId().equals(User.getUserId())){
                                     imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
-                                    textViewFriends.setText("Oczekiwanie");
+                                    textViewIsFriend.setText("Oczekiwanie");
                                     imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
-                                    textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
+                                    textViewIsFriend.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userOne));
                                 }else{
                                     imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
-                                    textViewFriends.setText("Akceptuj");
+                                    textViewIsFriend.setText("Akceptuj");
                                     imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
-                                    textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
+                                    textViewIsFriend.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(true, userOne, userTwo));
                                 }
                             }else if(friend.getFriend().getStatus().equals("1")){
                                 imageViewFriends.setBackgroundResource(R.drawable.ic_profile_friend);
-                                textViewFriends.setText("Friends");
+                                textViewIsFriend.setText("Friends");
                                 imageViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
-                                textViewFriends.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
+                                textViewIsFriend.setOnClickListener(v -> profileViewPresenter.onFriendsImageOrTextViewClick(false, friend.getFriend().getRelationshipId(), userTwo));
                             }
                         }
                     }
@@ -314,6 +325,60 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     }
 
     @Override
+    public void showFriendsCount(String userId) {
+        try{
+            RestClient.getClient().requestFriends(userId).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+                    for(Friend friend : response.body().getFriends()){
+                        friendsCount+=1;
+                    }
+                    textViewFriendsCount.setText(friendsCount+"");
+                }
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void showUserFriends(String userId) {
+        friendsList.clear();
+        try{
+            RestClient.getClient().requestFriends(userId).enqueue(new Callback<UserFriend>() {
+                @Override
+                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
+                    for(Friend friend : response.body().getFriends()){
+                        try{
+                            if(friendsList.size() >= 6){
+                                break;
+                            }
+                            if(Integer.parseInt(friend.getFriend().getUserOneId()) < Integer.parseInt(userId)){
+                                friendsList.add(new Post_("", friend.getFriend().getUserOneId()));
+                            }else{
+                                friendsList.add(new Post_("", friend.getFriend().getUserTwoId()));
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<UserFriend> call, Throwable t) {
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void showUserPosts(String userId) {
         postslist.clear();
         try{
@@ -334,6 +399,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                 @Override
                 public void onFailure(Call<Posts> call, Throwable t) {}
             });
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -440,6 +506,11 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
         recyclerViewGallery.setAdapter(profileGalleryAdapter);
         recyclerViewGallery.setNestedScrollingEnabled(false);
         recyclerViewGallery.invalidate();
+
+        profileFriendsAdapter = new ProfileFriendsAdapter(friendsList, this, profileViewPresenter);
+        recyclerViewFriends.setAdapter(profileFriendsAdapter);
+        recyclerViewFriends.setNestedScrollingEnabled(false);
+        recyclerViewFriends.invalidate();
 
         profilePostsAdapter = new TimelineAdapter(postslist, this, profileViewPresenter, 2);
         recyclerViewPosts.setAdapter(profilePostsAdapter);

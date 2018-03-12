@@ -77,12 +77,12 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/ic_friends"
-                app:layout_constraintRight_toRightOf="@+id/textViewFriends"
-                app:layout_constraintLeft_toLeftOf="@+id/textViewFriends"
+                app:layout_constraintRight_toRightOf="@+id/textViewIsFriend"
+                app:layout_constraintLeft_toLeftOf="@+id/textViewIsFriend"
                 app:layout_constraintTop_toBottomOf="@+id/viewProfileOptions" />
 
             <TextView
-                android:id="@+id/textViewFriends"
+                android:id="@+id/textViewIsFriend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -103,7 +103,19 @@
                 android:background="@color/colorGrey"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewFriends" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewIsFriend" />
+
+            <TextView
+                android:id="@+id/textViewGallery"
+                android:text="Zdjecia"
+                android:textSize="18sp"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewProfile" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewGallery"
@@ -115,7 +127,55 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewProfile" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewGallery" />
+
+            <View
+                android:id="@+id/viewFriends"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorGrey"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerViewGallery" />
+
+            <TextView
+                android:id="@+id/textViewFriends"
+                android:text="Znajomi"
+                android:textSize="18sp"
+                android:textColor="@color/colorBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewFriends" />
+
+            <TextView
+                android:id="@+id/textViewFriendsCount"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toRightOf="@+id/textViewFriends"
+                app:layout_constraintTop_toBottomOf="@+id/viewFriends" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewFriends"
+                android:numColumns="auto_fit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewFriends" />
 
             <View
                 android:id="@+id/viewProfile2"
@@ -130,7 +190,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerViewGallery" />
+                app:layout_constraintTop_toBottomOf="@+id/recyclerViewFriends" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewProfilePosts"

@@ -46,7 +46,7 @@ public class LoginFragment extends Fragment implements LoginViewContracts.LoginV
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 
-        loginViewPresenter = new LoginViewPresenter(this);
+        loginViewPresenter = new LoginViewPresenter(this, getActivity());
 
         buttonLogin.setOnClickListener(v -> loginViewPresenter.onLoginButtonClick(editTextUsername.getText().toString(), editTextPassword.getText().toString()));
         textViewRegister.setOnClickListener(v -> loginViewPresenter.onCreateAccountTextViewClick());

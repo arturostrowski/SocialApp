@@ -14,6 +14,8 @@ public interface ProfileViewContracts {
         void showUserName(String userId);
         void showUserFriendOption(String userId, String userTwoId);
         void showUserGallery(String userId);
+        void showFriendsCount(String userId);
+        void showUserFriends(String userId);
         void showUserPosts(String userId);
         void likePost(String postId);
         void unlikePost(String postId);

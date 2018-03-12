@@ -34,6 +34,11 @@ public class Post_ {
         this.priority = priority;
     }
 
+    public Post_(String postId, String userId) {
+        this.postId = postId;
+        this.userId = userId;
+    }
+
     public Post_(String postTxt){
         this.postTxt = postTxt;
     }
