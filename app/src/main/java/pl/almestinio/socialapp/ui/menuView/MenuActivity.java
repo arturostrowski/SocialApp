@@ -92,13 +92,21 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
     @Override
     protected void onResume() {
         super.onResume();
-        thread.start();
+        try{
+            thread.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        thread.interrupt();
+        try{
+            thread.interrupt();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
