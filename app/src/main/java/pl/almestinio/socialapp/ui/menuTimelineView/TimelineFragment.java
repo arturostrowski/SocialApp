@@ -25,11 +25,8 @@ import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.TimelineAdapter;
 import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
-import pl.almestinio.socialapp.http.friend.UserFriend;
 import pl.almestinio.socialapp.http.post.Post;
 import pl.almestinio.socialapp.http.post.Post_;
-import pl.almestinio.socialapp.http.post.Posts;
-import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.commentsView.CommentsActivity;
 import pl.almestinio.socialapp.ui.fullScreenPictureView.FullScreenPictureActivity;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
@@ -46,7 +43,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private TimelineAdapter timelineAdapter;
     private List<Post_> postsList = new ArrayList<Post_>();
-    private List<String> tt = new ArrayList<String>();
+    private List<String> relationshipList = new ArrayList<String>();
     private String relationshipIds;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -78,8 +75,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewTimelinePosts);
         layoutManager = new LinearLayoutManager(getContext());
 
-        timelineViewPresenter.loadFriendsId();
-//        timelineViewPresenter.loadPosts(isConnected);
+        timelineViewPresenter.getFriendsId(isConnected, actuallyPage);
         return view;
     }
 
@@ -122,7 +118,7 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void run() {
                 try{
-                    timelineViewPresenter.loadPosts(isConnected, actuallyPage);
+                    timelineViewPresenter.getPosts(isConnected, actuallyPage, relationshipIds);
                 }catch (Exception e){
 
                 }
@@ -133,11 +129,11 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         relationshipIds="";
-        tt.clear();
+        relationshipList.clear();
         isConnected = NetworkConnection.isNetworkConnection(getContext());
         actuallyPage = 0;
         postsList.clear();
-        timelineViewPresenter.loadFriendsId();
+        timelineViewPresenter.getFriendsId(isConnected, actuallyPage);
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -147,128 +143,25 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void getFriendsId() {
-        relationshipIds="";
-        tt.clear();
-        try {
-            RestClient.getClient().requestFriends(User.getUserId()).enqueue(new Callback<UserFriend>() {
-                @Override
-                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
-                    for(int i =0; i< response.body().getFriends().size(); i++){
-                        if(response.body().getFriends().get(i).getFriend().getUserOneId().equals(User.getUserId())) {
-                            tt.add(i, response.body().getFriends().get(i).getFriend().getUserTwoId());
-                        }else if(!response.body().getFriends().get(i).getFriend().getUserOneId().equals(User.getUserId())){
-                            tt.add(i, response.body().getFriends().get(i).getFriend().getUserOneId());
-                        }
-                    }
-                    relationshipIds = User.getUserId();
-                    for(String test : tt){
-                        relationshipIds = relationshipIds + "," + test;
-                    }
+    public void getFriends(String relationshipIds) {
+        this.relationshipIds = relationshipIds;
 
-                    timelineViewPresenter.loadPosts(isConnected, actuallyPage);
-                }
-                @Override
-                public void onFailure(Call<UserFriend> call, Throwable t) {
-
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        timelineViewPresenter.getPosts(isConnected, actuallyPage, relationshipIds);
     }
 
     @Override
-    public void showPosts() {
-        postsList.clear();
+    public void showPosts(List<Post> postList) {
+        actuallyPage++;
+        relationshipList.clear();
         try{
-            RestClient.getClient().requestPosts("", relationshipIds).enqueue(new Callback<Posts>() {
-                @Override
-                public void onResponse(Call<Posts> call, Response<Posts> response) {
-                    for(Post posts : response.body().getPosts()){
-                        postsList.add(new Post_(posts.getPost().getPostId().toString(), posts.getPost().getUserId().toString(), posts.getPost().getPostTxt().toString(), posts.getPost().getPostPic().toString(), posts.getPost().getPostTime().toString(), posts.getPost().getPriority().toString()));
-                        try{
-                            timelineAdapter.notifyItemRangeChanged(0,timelineAdapter.getItemCount());
-                            timelineAdapter.notifyDataSetChanged();
-                        }catch (Exception e){}
-                    }
-                }
-                @Override
-                public void onFailure(Call<Posts> call, Throwable t) {}
-            });
+            for(Post posts : postList){
+                postsList.add(new Post_(posts.getPost().getPostId().toString(), posts.getPost().getUserId().toString(), posts.getPost().getPostTxt().toString(), posts.getPost().getPostPic().toString(), posts.getPost().getPostTime().toString(), posts.getPost().getPriority().toString()));
+            }
+            timelineAdapter.notifyItemRangeChanged(0,timelineAdapter.getItemCount());
+            timelineAdapter.notifyDataSetChanged();
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void showPosts(int page) {
-//        postsList.clear();
-        try{
-            RestClient.getClient().requestPosts(relationshipIds, page).enqueue(new Callback<Posts>() {
-                @Override
-                public void onResponse(Call<Posts> call, Response<Posts> response) {
-                    if(response.body().getPosts().isEmpty()){
-                        timelineViewPresenter.doToast("Koniec aktywnosci");
-                    }else{
-                        for(Post posts : response.body().getPosts()){
-
-                            postsList.add(new Post_(posts.getPost().getPostId().toString(), posts.getPost().getUserId().toString(), posts.getPost().getPostTxt().toString(), posts.getPost().getPostPic().toString(), posts.getPost().getPostTime().toString(), posts.getPost().getPriority().toString()));
-                            try{
-                                timelineAdapter.notifyDataSetChanged();
-                            }catch (Exception e){}
-                        }
-                        actuallyPage++;
-                    }
-                }
-                @Override
-                public void onFailure(Call<Posts> call, Throwable t) {}
-            });
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void likePost(String postId) {
-        try{
-            RestClient.getClient().likePost(postId, User.getUserId()).enqueue(new Callback<Pojodemo>() {
-                @Override
-                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                }
-                @Override
-                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        timelineAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void unlikePost(String postId) {
-        try{
-            RestClient.getClient().deleteLike(postId, User.getUserId()).enqueue(new Callback<Pojodemo>() {
-                @Override
-                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                    if(response.body().getSuccess()){
-                        Log.e("Usunieto", ":D");
-                    }else{
-                        Log.e("aaaa", response.body().getError());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                    t.printStackTrace();
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        timelineAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -316,7 +209,8 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                             e.printStackTrace();
                         }
                         isConnected = NetworkConnection.isNetworkConnection(getContext());
-                        timelineViewPresenter.loadPosts(isConnected, actuallyPage);
+//                        timelineViewPresenter.getPosts(isConnected, actuallyPage);
+                        timelineViewPresenter.getFriendsId(isConnected, actuallyPage);
                         setAdapterAndGetRecyclerView();
                         timelineAdapter.notifyDataSetChanged();
                     }
@@ -324,5 +218,10 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {}
                 }).show();
+    }
+
+    @Override
+    public void refresh() {
+        timelineAdapter.notifyDataSetChanged();
     }
 }

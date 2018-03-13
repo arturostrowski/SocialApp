@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,17 +19,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.SectionPagerAdapter;
-import pl.almestinio.socialapp.http.RestClient;
-import pl.almestinio.socialapp.http.friend.UserFriend;
-import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.createPostView.CreatePostActivity;
 import pl.almestinio.socialapp.ui.menuInvitationsToFriendsView.InvitationsFragment;
 import pl.almestinio.socialapp.ui.menuSettingsView.SettingsFragment;
 import pl.almestinio.socialapp.ui.menuTimelineView.TimelineFragment;
 import pl.almestinio.socialapp.ui.searchFriendsView.SearchFriendsActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by mesti193 on 3/7/2018.
@@ -46,7 +39,9 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
     private Menu menu;
     private SectionPagerAdapter sectionPagerAdapter;
 
-    MenuViewContracts.MenuViewPresenter menuViewPresenter;
+    private MenuViewContracts.MenuViewPresenter menuViewPresenter;
+
+    private Thread thread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,60 +70,49 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
-
-
-
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_tab_posts);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_invitations);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_tab_menu);
 
-        Thread thread = new Thread() {
+        thread = new Thread() {
             @Override
             public void run() {
                 try {
                     while(true) {
                         sleep(2000);
-//                        Log.i("th", "thread");
-                        changeInvitationsTabLayout();
+                        menuViewPresenter.getNotConfirmedFriends();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         };
-
-        thread.start();
-
-
-
     }
 
-    private void changeInvitationsTabLayout(){
-        try{
-            RestClient.getClient().requestNotConfirmedFriends(User.getUserId()).enqueue(new Callback<UserFriend>() {
-                @Override
-                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
-                    if(response.body().getFriends().isEmpty()){
-                        Log.i("th", "empty");
-                        tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_invitations);
-                    }else{
-                        Log.i("th", "not empty");
-                        tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_invitations_plus);
-                    }
-                }
-                @Override
-                public void onFailure(Call<UserFriend> call, Throwable t) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        thread.start();
+    }
 
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        thread.interrupt();
     }
 
     @Override
     public void onBackPressed() {
         viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
+    }
+
+    @Override
+    public void changeInvitationsTabLayout(boolean isEmpty){
+        if(isEmpty){
+            tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_invitations);
+        }else{
+            tabLayout.getTabAt(1).setIcon(R.drawable.ic_tab_invitations_plus);
+        }
     }
 
     @Override
@@ -162,13 +146,6 @@ public class MenuActivity extends AppCompatActivity implements MenuViewContracts
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                /*
-
-                    WSTAWIC TUTAJ RESTa ;>
-
-                 */
-
                 return false;
             }
         });

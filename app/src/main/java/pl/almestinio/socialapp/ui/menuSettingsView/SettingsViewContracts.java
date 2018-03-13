@@ -11,12 +11,13 @@ public interface SettingsViewContracts {
         void finishActivity();
         void startMainActivity();
         void startFriendsActivity();
-        void showProfileData(String userId);
+        void showProfileImage(String userImage);
+        void showProfileName(String userName);
         void startProfileActivity(String userId);
     }
 
     interface SettingsViewPresenter{
-        void loadProfile(String userId);
+        void getProfileData();
         void onProfileViewClick(String userId);
         void onFriendsTextViewClick();
         void onClickLogoutTextView();

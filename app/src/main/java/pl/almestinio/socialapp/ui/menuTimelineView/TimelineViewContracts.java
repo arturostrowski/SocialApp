@@ -1,5 +1,9 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
+import java.util.List;
+
+import pl.almestinio.socialapp.http.post.Post;
+
 /**
  * Created by mesti193 on 3/7/2018.
  */
@@ -8,23 +12,19 @@ public interface TimelineViewContracts {
 
     interface TimelineView{
         void showToast(String message);
-        void getFriendsId();
-        void showPosts();
-        void showPosts(int page);
-        void likePost(String postId);
-        void unlikePost(String postId);
+        void getFriends(String relationshipIds);
+        void showPosts(List<Post> postList);
         void startProfileActivity(String userId);
         void startFullScreenPicture(String imageUrl);
         void startCommentsActivity(String postId);
         void showDeletePostAlert(String postId);
+        void refresh();
         void setAdapterAndGetRecyclerView();
     }
 
     interface TimelineViewPresenter{
-        void doToast(String message);
-        void loadFriendsId();
-        void loadPosts(boolean isNetworkConnection);
-        void loadPosts(boolean isNetworkConnection, int page);
+        void getFriendsId(boolean isConnected, int actuallyPage);
+        void getPosts(boolean isNetworkConnection, int page, String relationshipIds);
         void onNameTextViewClick(String userId);
         void onUserImageViewClick(String userId);
         void onImageViewClick(String imageUrl);

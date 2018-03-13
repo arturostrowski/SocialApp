@@ -21,16 +21,9 @@ import butterknife.ButterKnife;
 import pl.almestinio.socialapp.MainActivity;
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.database.DatabaseUser;
-import pl.almestinio.socialapp.http.RestClient;
-import pl.almestinio.socialapp.http.user.Users;
-import pl.almestinio.socialapp.http.userphoto.UserPhoto;
-import pl.almestinio.socialapp.http.userphoto.UsersPic;
 import pl.almestinio.socialapp.model.User;
 import pl.almestinio.socialapp.ui.friendsView.FriendsActivity;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by mesti193 on 3/10/2018.
@@ -71,7 +64,7 @@ public class SettingsFragment extends Fragment implements SettingsViewContracts.
 
         settingsViewPresenter = new SettingsViewPresenter(this);
 
-        settingsViewPresenter.loadProfile(User.getUserId());
+        settingsViewPresenter.getProfileData();
 
 //        textViewSettingsMenuFriends.setOnClickListener(v -> settingsViewPresenter.onFriendsTextViewClick());
         textViewLogout.setOnClickListener(v -> settingsViewPresenter.onClickLogoutTextView());
@@ -105,35 +98,13 @@ public class SettingsFragment extends Fragment implements SettingsViewContracts.
     }
 
     @Override
-    public void showProfileData(String userId) {
-        try{
-            RestClient.getClient().requestUserPhoto(User.getUserId()).enqueue(new Callback<UserPhoto>() {
-                @Override
-                public void onResponse(Call<UserPhoto> call, Response<UserPhoto> response) {
-                    for(UsersPic userPic : response.body().getUsersPic()){
-                        if(!userPic.getUserPic().getImage().isEmpty()){
-                            Picasso.with(getContext()).load(userPic.getUserPic().getImage()).fit().centerCrop().transform(transformation).placeholder(R.drawable.logo).into(imageViewMenuSettingsUserPic);
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<UserPhoto> call, Throwable t) {
+    public void showProfileImage(String userImage) {
+        Picasso.with(getContext()).load(userImage).fit().centerCrop().transform(transformation).placeholder(R.drawable.logo).into(imageViewMenuSettingsUserPic);
+    }
 
-                }
-            });
-            RestClient.getClient().requestUser(User.getUserId()).enqueue(new Callback<Users>() {
-                @Override
-                public void onResponse(Call<Users> call, Response<Users> response) {
-                    String test = response.body().getUsers().get(0).getUser().getName();
-                    textViewMenuSettingsUserName.setText(test);
-                }
-                @Override
-                public void onFailure(Call<Users> call, Throwable t) {
-                }
-            });
-        }catch (Exception e){
-
-        }
+    @Override
+    public void showProfileName(String userName) {
+        textViewMenuSettingsUserName.setText(userName);
     }
 
     @Override

@@ -1,7 +1,11 @@
 package pl.almestinio.socialapp.ui.commentsView;
 
+import java.util.List;
+
 import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
+import pl.almestinio.socialapp.http.comment.Comments;
+import pl.almestinio.socialapp.http.comment.Post;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,10 +23,22 @@ public class CommentsViewPresenter implements CommentsViewContracts.CommentsView
     }
 
     @Override
-    public void loadComments(boolean isNetworkConnection, String postId) {
+    public void getComments(boolean isNetworkConnection, String postId) {
         if(isNetworkConnection){
             commentsView.showToast("Load comments");
-            commentsView.showComments(postId);
+            try {
+                RestClient.getClient().requestComments(postId).enqueue(new Callback<Comments>() {
+                    @Override
+                    public void onResponse(Call<Comments> call, Response<Comments> response) {
+                        List<Post> result = response.body().getPosts();
+                        commentsView.showComments(result);
+                    }
+                    @Override
+                    public void onFailure(Call<Comments> call, Throwable t) {}
+                });
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }else{
             commentsView.showToast("Brak polaczenia z internetem");
         }

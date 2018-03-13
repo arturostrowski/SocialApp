@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,9 +28,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pl.almestinio.socialapp.R;
-import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RequestsService;
-import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.UploadObject;
 import pl.almestinio.socialapp.model.User;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -75,51 +72,7 @@ public class CreatePostActivity extends AppCompatActivity implements EasyPermiss
         createPostViewPresenter = new CreatePostViewPresenter(this);
 
         buttonUploadImage.setOnClickListener(v -> createPostViewPresenter.onUploadImageButtonClick());
-
         buttonAddPost.setOnClickListener(v -> createPostViewPresenter.onCreatePostButtonClick(editTextAddPostText.getText().toString(), fileName));
-
-    }
-
-    @Override
-    public void createPost(String text, String imageUrl) {
-        try {
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String current_time_str = time_formatter.format(System.currentTimeMillis());
-                        Log.e("LD", current_time_str);
-                        if(imageUrl.equals("")){
-                            RestClient.getClient().createPost(User.getUserId(), text, "", current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
-                                @Override
-                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                                }
-                                @Override
-                                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                                }
-                            });
-                        }else{
-                            RestClient.getClient().createPost(User.getUserId(), text, "https://almestinio.pl/phpimage/"+imageUrl, current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
-                                @Override
-                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                                }
-                                @Override
-                                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                                }
-                            });
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        this.finish();
     }
 
     @Override
@@ -132,6 +85,11 @@ public class CreatePostActivity extends AppCompatActivity implements EasyPermiss
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void finishActivity() {
+        this.finish();
     }
 
     @Override

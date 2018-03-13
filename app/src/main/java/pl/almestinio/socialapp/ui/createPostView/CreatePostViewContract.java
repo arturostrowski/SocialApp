@@ -7,9 +7,9 @@ package pl.almestinio.socialapp.ui.createPostView;
 public interface CreatePostViewContract {
 
     interface CreatePostView{
-        void createPost(String text, String imageUrl);
         void uploadImage();
         void showToast(String message);
+        void finishActivity();
     }
 
     interface  CreatePostViewPresenter{

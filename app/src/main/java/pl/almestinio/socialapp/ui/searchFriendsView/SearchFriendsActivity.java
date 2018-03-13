@@ -13,14 +13,9 @@ import java.util.List;
 
 import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.SearchFriendsAdapter;
-import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.user.User;
 import pl.almestinio.socialapp.http.user.User_;
-import pl.almestinio.socialapp.http.user.Users;
 import pl.almestinio.socialapp.ui.profileView.ProfileActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by mesti193 on 3/9/2018.
@@ -44,12 +39,10 @@ public class SearchFriendsActivity extends AppCompatActivity implements SearchFr
         friendsViewPresenter = new SearchFriendsViewPresenter(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewSearchFriends);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        friendsViewPresenter.loadSearchFriendsView(bundle.getString("users"));
-
+        friendsViewPresenter.getUsers(bundle.getString("users"));
     }
 
     @Override
@@ -58,25 +51,14 @@ public class SearchFriendsActivity extends AppCompatActivity implements SearchFr
     }
 
     @Override
-    public void showSearchUsers(String users) {
+    public void showSearchUsers(List<User> usersList) {
         userList.clear();
-        try {
-            RestClient.getClient().requestUsers2(users).enqueue(new Callback<Users>() {
-                @Override
-                public void onResponse(Call<Users> call, Response<Users> response) {
-                    for(User users : response.body().getUsers()){
-                        userList.add(new User_(users.getUser().getUserId(), users.getUser().getName()));
-                    }
-                    try{
-                        searchFriendAdapter.notifyItemRangeChanged(0, userList.size());
-                        searchFriendAdapter.notifyDataSetChanged();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                @Override
-                public void onFailure(Call<Users> call, Throwable t) {}
-            });
+        try{
+            for(User users : usersList){
+                userList.add(new User_(users.getUser().getUserId(), users.getUser().getName()));
+            }
+            searchFriendAdapter.notifyItemRangeChanged(0, userList.size());
+            searchFriendAdapter.notifyDataSetChanged();
         }catch (Exception e){
             e.printStackTrace();
         }

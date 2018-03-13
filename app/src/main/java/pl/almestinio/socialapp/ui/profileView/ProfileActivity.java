@@ -722,6 +722,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
     @Override
     public void onRefresh() {
+        friendsCount=0;
         profileViewPresenter.loadUserProfile(bundleStringUserId);
         swipeRefreshLayout.setRefreshing(false);
     }

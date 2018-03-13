@@ -63,21 +63,10 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final User_ users = usersList.get(position);
-
         getUserPic(users, holder);
         holder.textViewSearchFriend.setText(users.getName());
 
-        holder.constraintFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                onClick.onClickUser(position, users.getUserId());
-            }
-        });
-
-
         holder.constraintFriends.setOnClickListener(v -> friendsViewPresenter.onClickUser(users.getUserId()));
-
-
     }
 
     @Override
@@ -93,13 +82,10 @@ public class SearchFriendsAdapter extends RecyclerView.Adapter<SearchFriendsAdap
                     if(!userPic.getUserPic().getImage().isEmpty()){
                         Picasso.with(context).load(userPic.getUserPic().getImage()).fit().centerCrop().transform(transformation).placeholder(R.drawable.logo).into(holder.imageViewSearchFriend);
                     }
-
                 }
             }
-
             @Override
             public void onFailure(Call<UserPhoto> call, Throwable t) {
-
             }
         });
     }

@@ -26,7 +26,6 @@ import pl.almestinio.socialapp.R;
 import pl.almestinio.socialapp.adapters.CommentsAdapter;
 import pl.almestinio.socialapp.http.Pojodemo;
 import pl.almestinio.socialapp.http.RestClient;
-import pl.almestinio.socialapp.http.comment.Comments;
 import pl.almestinio.socialapp.http.comment.Post;
 import pl.almestinio.socialapp.http.comment.Post_;
 import pl.almestinio.socialapp.model.User;
@@ -82,15 +81,8 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
         buttonWriteComment.setOnClickListener(v -> commentsViewPresenter.onWriteCommentButtonClick(bundleStringPostId, User.getUserId(), editTextAddComment.getText().toString()));
 
-        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
+        commentsViewPresenter.getComments(isConnected, bundleStringPostId);
         setAdapterAndGetRecyclerView();
-    }
-
-    private void setAdapterAndGetRecyclerView(){
-        commentsAdapter = new CommentsAdapter(commentsList, this, commentsViewPresenter);
-        recyclerView.setAdapter(commentsAdapter);
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.invalidate();
     }
 
     @Override
@@ -99,34 +91,15 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
     }
 
     @Override
-    public void refreshView() {
-        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
-        editTextAddComment.setText("");
-        setAdapterAndGetRecyclerView();
-        commentsAdapter.notifyDataSetChanged();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void showComments(String postId) {
+    public void showComments(List<Post> commentList) {
         commentsList.clear();
-        try {
-            RestClient.getClient().requestComments(postId).enqueue(new Callback<Comments>() {
-                @Override
-                public void onResponse(Call<Comments> call, Response<Comments> response) {
-                    for(Post post : response.body().getPosts()) {
-                        commentsList.add(new Post_(post.getPost().getCommentId(), post.getPost().getPostId(), post.getPost().getUserId(), post.getPost().getComment()));
-                        try {
-                            commentsAdapter.notifyItemRangeChanged(0, commentsAdapter.getItemCount());
-                            commentsAdapter.notifyDataSetChanged();
-                        } catch (Exception e) {
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<Comments> call, Throwable t) {}
-            });
-        }catch (Exception e) {
+        try{
+            for(Post comments : commentList){
+                commentsList.add(new Post_(comments.getPost().getCommentId(), comments.getPost().getPostId(), comments.getPost().getUserId(), comments.getPost().getComment()));
+            }
+            commentsAdapter.notifyItemRangeChanged(0, commentsAdapter.getItemCount());
+            commentsAdapter.notifyDataSetChanged();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -144,23 +117,18 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-
                             RestClient.getClient().deleteComment(commentId).enqueue(new Callback<Pojodemo>() {
                                 @Override
                                 public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-
                                 }
-
                                 @Override
                                 public void onFailure(Call<Pojodemo> call, Throwable t) {
-
                                 }
                             });
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        commentsViewPresenter.loadComments(true, postId);
+                        commentsViewPresenter.getComments(isConnected, postId);
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -175,8 +143,24 @@ public class CommentsActivity extends AppCompatActivity implements CommentsViewC
 
     @Override
     public void onRefresh() {
-        commentsViewPresenter.loadComments(isConnected, bundleStringPostId);
+        commentsViewPresenter.getComments(isConnected, bundleStringPostId);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void refreshView() {
+        commentsViewPresenter.getComments(isConnected, bundleStringPostId);
+        editTextAddComment.setText("");
+        setAdapterAndGetRecyclerView();
+        commentsAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void setAdapterAndGetRecyclerView(){
+        commentsAdapter = new CommentsAdapter(commentsList, this, commentsViewPresenter);
+        recyclerView.setAdapter(commentsAdapter);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.invalidate();
     }
 
 }

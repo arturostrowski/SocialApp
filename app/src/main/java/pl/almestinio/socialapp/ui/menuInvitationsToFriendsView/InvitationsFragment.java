@@ -62,7 +62,7 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
 
         invitationsViewPresenter = new InvitationsViewPresenter(this);
 
-        invitationsViewPresenter.loadNotAcceptedUsers(User.getUserId());
+        invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
 
         return view;
     }
@@ -73,40 +73,23 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     @Override
-    public void getNotAcceptedUsers(String userId) {
+    public void showNotAcceptedUsers(List<Friend> userFriendList) {
         friendList.clear();
         try{
-            RestClient.getClient().requestNotConfirmedFriends(User.getUserId()).enqueue(new Callback<UserFriend>() {
-                @Override
-                public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
-                    for(Friend friend : response.body().getFriends()){
-                        friendList.add(new Friend_(friend.getFriend().getRelationshipId(), friend.getFriend().getUserOneId(), friend.getFriend().getUserTwoId(), friend.getFriend().getStatus(), friend.getFriend().getActionUserId()));
-                        try{
-                            invitationsAdapter.notifyItemRangeChanged(0, friendList.size());
-                            invitationsAdapter.notifyDataSetChanged();
-                        }catch (Exception e){}
-                    }
-                }
-                @Override
-                public void onFailure(Call<UserFriend> call, Throwable t) {
-
-                }
-            });
+            for(Friend friend : userFriendList){
+                friendList.add(new Friend_(friend.getFriend().getRelationshipId(), friend.getFriend().getUserOneId(), friend.getFriend().getUserTwoId(), friend.getFriend().getStatus(), friend.getFriend().getActionUserId()));
+            }
+            invitationsAdapter.notifyItemRangeChanged(0, friendList.size());
+            invitationsAdapter.notifyDataSetChanged();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     @Override
-    public void startProfileActivity(String userId) {
-        startActivity(new Intent(getActivity(), ProfileActivity.class).putExtra("userid", userId));
-    }
-
-    @Override
     public void acceptUser(String userId, String userTwoId) {
         String userOne;
         String userTwo;
-
         if(Integer.parseInt(userId)<Integer.parseInt(userTwoId)){
             userOne = userId;
             userTwo = userTwoId;
@@ -114,8 +97,6 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
             userOne = userTwoId;
             userTwo = userId;
         }
-
-
         RestClient.getClient().acceptFriend(userOne, userTwo).enqueue(new Callback<UserFriend>() {
             @Override
             public void onResponse(Call<UserFriend> call, Response<UserFriend> response) {
@@ -127,7 +108,8 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
 
             }
         });
-        invitationsViewPresenter.loadNotAcceptedUsers(User.getUserId());
+        invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
+        invitationsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -147,12 +129,18 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
         }catch (Exception e){
             e.printStackTrace();
         }
-        invitationsViewPresenter.loadNotAcceptedUsers(User.getUserId());
+        invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
+        invitationsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void refreshView() {
-        invitationsViewPresenter.loadNotAcceptedUsers(User.getUserId());
+        invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
+    }
+
+    @Override
+    public void startProfileActivity(String userId) {
+        startActivity(new Intent(getActivity(), ProfileActivity.class).putExtra("userid", userId));
     }
 
     @Override
@@ -165,7 +153,7 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        invitationsViewPresenter.loadNotAcceptedUsers(User.getUserId());
+        invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
         mSwipeRefreshLayout.setRefreshing(false);
         invitationsAdapter.notifyDataSetChanged();
     }
