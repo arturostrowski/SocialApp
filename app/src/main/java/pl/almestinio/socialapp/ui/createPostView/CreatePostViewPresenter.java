@@ -62,6 +62,7 @@ public class CreatePostViewPresenter implements CreatePostViewContract.CreatePos
         } catch (Exception e) {
             e.printStackTrace();
         }
+        createPostView.showToast("Dodano post!");
         createPostView.finishActivity();
     }
 

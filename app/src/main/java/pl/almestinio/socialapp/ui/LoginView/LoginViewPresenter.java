@@ -60,10 +60,10 @@ public class LoginViewPresenter implements LoginViewContracts.LoginViewPresenter
                 public void onResponse(Call<Users> call, Response<Users> response) {
                     for(pl.almestinio.socialapp.http.user.User user : response.body().getUsers()){
                         if(user.getUser().getEmail().equals(username) && user.getUser().getPassword().equals(password)){
-                            if(DatabaseUser.getCategories().isEmpty()){
-                                DatabaseUser.addOrUpdateCategories(new User(user.getUser().getUserId()));
+                            if(DatabaseUser.getUser().isEmpty()){
+                                DatabaseUser.addOrUpdateUser(new User(user.getUser().getUserId()));
                             }else{
-                                DatabaseUser.updateCategories(user.getUser().getUserId());
+                                DatabaseUser.updateUser(user.getUser().getUserId());
                             }
                             User.setUserId(user.getUser().getUserId());
                             loginView.showToast("Poprawne dane!");

@@ -15,24 +15,24 @@ import pl.almestinio.socialapp.model.User;
 
 public class DatabaseUser {
 
-    public static List<User> getCategories() {
-        List<User> categoryList = null;
+    public static List<User> getUser() {
+        List<User> userList = null;
         try {
-            categoryList = DatabaseHelper.instance.getUser().queryForAll();
+            userList = DatabaseHelper.instance.getUser().queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return categoryList;
+        return userList;
     }
 
-    public static void addOrUpdateCategories(User user) {
+    public static void addOrUpdateUser(User user) {
         try {
             DatabaseHelper.instance.getUser().createOrUpdate(user);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public static void updateCategories(String user) {
+    public static void updateUser(String user) {
         try {
 //            DatabaseHelper.instance.getUser().update(user);
             UpdateBuilder<User, Integer> updateBuilder = DatabaseHelper.instance.getUser().updateBuilder();

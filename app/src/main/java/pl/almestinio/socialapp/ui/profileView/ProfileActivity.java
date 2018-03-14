@@ -91,6 +91,9 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     @BindView(R.id.textViewFriendsCount)
     TextView textViewFriendsCount;
 
+    @BindView(R.id.textViewShowMoreFriends)
+    TextView textViewShowMoreFriends;
+
     private Transformation transformation = new RoundedTransformationBuilder()
             .borderColor(Color.BLACK)
             .borderWidthDp(2)
@@ -356,6 +359,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                     for(Friend friend : response.body().getFriends()){
                         try{
                             if(friendsList.size() >= 6){
+                                textViewShowMoreFriends.setVisibility(View.VISIBLE);
                                 break;
                             }
                             if(Integer.parseInt(friend.getFriend().getUserOneId()) < Integer.parseInt(userId)){
@@ -386,10 +390,10 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                 @Override
                 public void onResponse(Call<Posts> call, Response<Posts> response) {
                     for(Post posts : response.body().getPosts()){
-                        if(!posts.getPost().getPostPic().isEmpty()){
+//                        if(!posts.getPost().getPostPic().isEmpty()){
                             postslist.add(new Post_(posts.getPost().getPostId().toString(), posts.getPost().getUserId().toString(), posts.getPost().getPostTxt().toString(), posts.getPost().getPostPic().toString(), posts.getPost().getPostTime().toString(), posts.getPost().getPriority().toString()));
                             Log.i("POST", "DODANO");
-                        }
+//                        }
                         try{
                             profilePostsAdapter.notifyItemRangeChanged(0,profilePostsAdapter.getItemCount());
                             profilePostsAdapter.notifyDataSetChanged();

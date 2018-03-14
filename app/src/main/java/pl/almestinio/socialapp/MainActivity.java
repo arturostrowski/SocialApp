@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 
 
-        if(DatabaseUser.getCategories().isEmpty() || DatabaseUser.getCategories().get(0).getUserId().equals("")){
+        if(DatabaseUser.getUser().isEmpty() || DatabaseUser.getUser().get(0).getUserId().equals("")){
             changeFragment(new LoginFragment(), LoginFragment.class.getName());
         }else{
-            User.setUserId(DatabaseUser.getCategories().get(0).getUserId());
+            User.setUserId(DatabaseUser.getUser().get(0).getUserId());
             startActivity(new Intent(this, MenuActivity.class));
         }
 

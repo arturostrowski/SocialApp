@@ -80,6 +80,12 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+//        onRefresh();
+    }
+
+    @Override
     public void setAdapterAndGetRecyclerView(){
         timelineAdapter = new TimelineAdapter(postsList, getContext(), timelineViewPresenter);
         recyclerView.setAdapter(timelineAdapter);
