@@ -61,12 +61,10 @@ public class SettingsFragment extends Fragment implements SettingsViewContracts.
         View view = inflater.inflate(R.layout.fragment_settings_menu, container, false);
         setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
-
         settingsViewPresenter = new SettingsViewPresenter(this);
 
         settingsViewPresenter.getProfileData();
 
-//        textViewSettingsMenuFriends.setOnClickListener(v -> settingsViewPresenter.onFriendsTextViewClick());
         textViewLogout.setOnClickListener(v -> settingsViewPresenter.onClickLogoutTextView());
         imageViewLogout.setOnClickListener(v -> settingsViewPresenter.onClickLogoutTextView());
         imageViewMenuSettingsUserPic.setOnClickListener(v -> settingsViewPresenter.onProfileViewClick(User.getUserId()));
@@ -83,7 +81,7 @@ public class SettingsFragment extends Fragment implements SettingsViewContracts.
 
     @Override
     public void finishActivity() {
-        DatabaseUser.updateCategories("");
+        DatabaseUser.updateUser("");
         getActivity().finish();
     }
 

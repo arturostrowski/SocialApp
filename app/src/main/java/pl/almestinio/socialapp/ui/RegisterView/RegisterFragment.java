@@ -43,7 +43,6 @@ public class RegisterFragment extends Fragment implements RegisterViewContracts.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         setHasOptionsMenu(true);
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         ButterKnife.bind(this, view);
         fragmentManager = getFragmentManager();
 

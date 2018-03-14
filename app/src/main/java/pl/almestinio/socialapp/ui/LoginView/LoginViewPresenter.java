@@ -28,31 +28,6 @@ public class LoginViewPresenter implements LoginViewContracts.LoginViewPresenter
     @Override
     public void onLoginButtonClick(String username, String password) {
 
-//        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//
-//        mAuth.signInWithEmailAndPassword(username, password)
-//                .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Log.d("xD", "signInWithEmail:success");
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//                            loginView.showToast("Authentication success.");
-//
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Log.w("xD", "signInWithEmail:failure", task.getException());
-////                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
-////                                    Toast.LENGTH_SHORT).show();
-//                            loginView.showToast("Authentication failed.");
-////                            updateUI(null);
-//                        }
-//
-//                        // ...
-//                    }
-//                });
-
         loginView.showToast("Login Button Clicked!");
         try{
             RestClient.getClient().requestUsers().enqueue(new Callback<Users>() {
