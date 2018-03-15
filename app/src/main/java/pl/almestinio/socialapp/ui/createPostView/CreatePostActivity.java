@@ -133,7 +133,7 @@ public class CreatePostActivity extends AppCompatActivity implements EasyPermiss
                     }
                     @Override
                     public void onFailure(Call<UploadObject> call, Throwable t) {
-                        Log.e("xd", "Error " + t.getMessage());
+                        Log.e("onActivityResult", "Error " + t.getMessage());
                     }
                 });
 
@@ -171,12 +171,11 @@ public class CreatePostActivity extends AppCompatActivity implements EasyPermiss
                 @Override
                 public void onResponse(Call<UploadObject> call, Response<UploadObject> response) {
                     Toast.makeText(CreatePostActivity.this, "Success " + response.message(), Toast.LENGTH_LONG).show();
-                    Toast.makeText(CreatePostActivity.this, "Success " + response.body().toString(), Toast.LENGTH_LONG).show();
                     buttonAddPost.setVisibility(View.VISIBLE);
                 }
                 @Override
                 public void onFailure(Call<UploadObject> call, Throwable t) {
-                    Log.e("xdddd", "Error " + t.getMessage());
+                    Log.e("onPermissionsGranted", "Error " + t.getMessage());
                 }
             });
 

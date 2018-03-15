@@ -1,6 +1,7 @@
 package pl.almestinio.socialapp.ui.registerView;
 
 import android.app.Activity;
+import android.util.Log;
 
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.user.User;
@@ -48,6 +49,8 @@ public class RegisterViewPresenter implements RegisterViewContracts.RegisterView
                 }
                 @Override
                 public void onFailure(Call<Users> call, Throwable t) {
+                    registerView.showToast("Blad podczas rejestracji");
+                    Log.e("onRegisterButtonClick", t.getMessage());
                 }
             });
         }else if(fullName.isEmpty() || username.isEmpty() || password.isEmpty()){
@@ -71,7 +74,8 @@ public class RegisterViewPresenter implements RegisterViewContracts.RegisterView
 
             @Override
             public void onFailure(Call<Users> call, Throwable t) {
-
+               registerView.showToast("Blad podczas dodawania uzytkownika do bazy");
+                Log.e("addUser", t.getMessage());
             }
         });
 

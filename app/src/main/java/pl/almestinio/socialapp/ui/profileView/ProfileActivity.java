@@ -533,14 +533,13 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                    showToast("Blad podczas dodawania uzytkownika do grona znajomych");
+                    Log.e("addFriend", t.getMessage());
                 }
             });
 
             profileViewPresenter.loadUserProfile(bundleStringUserId);
 
-//            finish();
-//            startActivity(getIntent());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -556,12 +555,11 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                 }
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                    showToast("Blad podczas akceptacji uzytkownika do listy znajomych");
+                    Log.e("acceptFriend", t.getMessage());
                 }
             });
             profileViewPresenter.loadUserProfile(bundleStringUserId);
-//            finish();
-//            startActivity(getIntent());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -578,12 +576,11 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                    showToast("Blad podczas usuwania uzytkownika z listy znajomych");
+                    Log.e("removeFriend", t.getMessage());
                 }
             });
             profileViewPresenter.loadUserProfile(bundleStringUserId);
-//            finish();
-//            startActivity(getIntent());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -615,7 +612,6 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
             if(EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 String filePath = getRealPathFromURIPath(uri, ProfileActivity.this);
                 File file = new File(filePath);
-                Log.e("x", "Filename " + "user_id="+User.getUserId()+"_"+file.getName());
                 fileName = "user_id="+User.getUserId()+"_"+file.getName();
                 RequestBody mFile = RequestBody.create(MediaType.parse("image/*"), file);
                 MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", "user_id="+User.getUserId()+"_"+file.getName(), mFile);
@@ -640,6 +636,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
 
                                         @Override
                                         public void onFailure(Call<UserPhoto> call, Throwable t) {
+                                            Log.e("onActivityResultProfile", t.getMessage());
                                         }
                                     });
 
@@ -659,9 +656,9 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                                         }
                                         @Override
                                         public void onFailure(Call<UserPhoto> call, Throwable t) {
+                                            Log.e("onActivityResultProfile", t.getMessage());
                                         }
                                     });
-
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -672,10 +669,9 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                     }
                     @Override
                     public void onFailure(Call<UploadObject> call, Throwable t) {
-                        Log.e("xd", "Error " + t.getMessage());
+                        Log.e("onActivityResultProfile", t.getMessage());
                     }
                 });
-
             }else{
                 EasyPermissions.requestPermissions(this, "This app needs access to your file storage so that it can read photos.", READ_REQUEST_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
             }
@@ -713,7 +709,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
                 }
                 @Override
                 public void onFailure(Call<UploadObject> call, Throwable t) {
-                    Log.e("xdddd", "Error " + t.getMessage());
+                    Log.e("onPermissionsGranted", t.getMessage());
                 }
             });
 
@@ -721,7 +717,7 @@ public class ProfileActivity extends AppCompatActivity implements EasyPermission
     }
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Log.e("dd", "Permission has been denied");
+        Log.e("onPermissionsDenied", "onPermissionsDenied");
     }
 
     @Override

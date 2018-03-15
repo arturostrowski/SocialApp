@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.menuView;
 
+import android.util.Log;
+
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.friend.UserFriend;
 import pl.almestinio.socialapp.model.User;
@@ -34,6 +36,8 @@ public class MenuViewPresenter implements MenuViewContracts.MenuViewPresenter {
                 }
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
+                    menuView.showToast("Blad podczas pobierania i zmiany layoutu nie potwierdzonych uzytkownikow");
+                    Log.e("getNotConfirmedFriends", t.getMessage());
                 }
             });
         }catch (Exception e){

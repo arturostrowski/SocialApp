@@ -206,16 +206,14 @@ public class TimelineFragment extends Fragment implements SwipeRefreshLayout.OnR
 
                                 @Override
                                 public void onFailure(Call<Pojodemo> call, Throwable t) {
-
+                                    showToast("Blad podczas usuwania posta");
+                                    Log.e("showDeletePostAlert", t.getMessage());
                                 }
                             });
-                            Log.i("USUN", "XDDD");
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         isConnected = NetworkConnection.isNetworkConnection(getContext());
-//                        timelineViewPresenter.getPosts(isConnected, actuallyPage);
                         timelineViewPresenter.getFriendsId(isConnected, actuallyPage);
                         setAdapterAndGetRecyclerView();
                         timelineAdapter.notifyDataSetChanged();

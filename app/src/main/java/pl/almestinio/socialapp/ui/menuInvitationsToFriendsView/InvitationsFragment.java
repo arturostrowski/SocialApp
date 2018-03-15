@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +106,8 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
 
             @Override
             public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                showToast("Blad podczas akceptacji zaproszenia od uzytkownika");
+                Log.e("acceptUser", t.getMessage());
             }
         });
         invitationsViewPresenter.getNotAcceptedUsers(User.getUserId());
@@ -123,7 +125,8 @@ public class InvitationsFragment extends Fragment implements SwipeRefreshLayout.
 
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                    showToast("Blad podczas usuwania zaproszenia od uzytkownika");
+                    Log.e("removeUser", t.getMessage());
                 }
             });
         }catch (Exception e){

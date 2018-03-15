@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.searchFriendsView;
 
+import android.util.Log;
+
 import java.util.List;
 
 import pl.almestinio.socialapp.http.RestClient;
@@ -32,7 +34,10 @@ public class SearchFriendsViewPresenter implements SearchFriendsViewContracts.Fr
                     friendsView.setAdapterAndGetRecyclerView();
                 }
                 @Override
-                public void onFailure(Call<Users> call, Throwable t) {}
+                public void onFailure(Call<Users> call, Throwable t) {
+                    friendsView.showToast("Blad podczas pobierania danych o uztkownikach");
+                    Log.e("getUsers", t.getMessage());
+                }
             });
         }catch (Exception e){
             e.printStackTrace();

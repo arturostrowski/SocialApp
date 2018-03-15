@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.menuTimelineView;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +58,8 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
                 }
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
+                    timelineView.showToast("Blad podczas pobierania id uzytkownikow z serwera");
+                    Log.e("getFriendsId", t.getMessage());
                 }
             });
         }catch (Exception e){
@@ -79,7 +83,10 @@ public class TimelineViewPresenter implements TimelineViewContracts.TimelineView
                         }
                     }
                     @Override
-                    public void onFailure(Call<Posts> call, Throwable t) {}
+                    public void onFailure(Call<Posts> call, Throwable t) {
+                        timelineView.showToast("Blad podczas pobierania postow z serwera");
+                        Log.e("getPosts", t.getMessage());
+                    }
                 });
             }catch (Exception e){
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 package pl.almestinio.socialapp.ui.loginView;
 
 import android.app.Activity;
+import android.util.Log;
 
 import pl.almestinio.socialapp.database.DatabaseUser;
 import pl.almestinio.socialapp.http.RestClient;
@@ -49,13 +50,13 @@ public class LoginViewPresenter implements LoginViewContracts.LoginViewPresenter
 
                 @Override
                 public void onFailure(Call<Users> call, Throwable t) {
-
+                    loginView.showToast("Blad podczas logowania ( nie poprawne dane/blad serwera )");
+                    Log.e("onLoginButtonClick", t.getMessage());
                 }
             });
         }catch (Exception e){
             e.printStackTrace();
         }
-        loginView.showToast("Bledne dane!");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.commentsView;
 
+import android.util.Log;
+
 import java.util.List;
 
 import pl.almestinio.socialapp.http.Pojodemo;
@@ -26,19 +28,18 @@ public class CommentsViewPresenter implements CommentsViewContracts.CommentsView
     public void getComments(boolean isNetworkConnection, String postId) {
         if(isNetworkConnection){
             commentsView.showToast("Load comments");
-            try {
-                RestClient.getClient().requestComments(postId).enqueue(new Callback<Comments>() {
-                    @Override
-                    public void onResponse(Call<Comments> call, Response<Comments> response) {
-                        List<Post> result = response.body().getPosts();
-                        commentsView.showComments(result);
-                    }
-                    @Override
-                    public void onFailure(Call<Comments> call, Throwable t) {}
-                });
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
+            RestClient.getClient().requestComments(postId).enqueue(new Callback<Comments>() {
+                @Override
+                public void onResponse(Call<Comments> call, Response<Comments> response) {
+                    List<Post> result = response.body().getPosts();
+                    commentsView.showComments(result);
+                }
+                @Override
+                public void onFailure(Call<Comments> call, Throwable t) {
+                    commentsView.showToast("Wystapil blad pobierania komentarzy z serwera");
+                    Log.e("GetComments", t.getMessage());
+                }
+            });
         }else{
             commentsView.showToast("Brak polaczenia z internetem");
         }

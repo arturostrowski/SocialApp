@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.menuSettingsView;
 
+import android.util.Log;
+
 import pl.almestinio.socialapp.http.RestClient;
 import pl.almestinio.socialapp.http.user.Users;
 import pl.almestinio.socialapp.http.userphoto.UserPhoto;
@@ -35,7 +37,8 @@ public class SettingsViewPresenter implements SettingsViewContracts.SettingsView
                 }
                 @Override
                 public void onFailure(Call<UserPhoto> call, Throwable t) {
-
+                    settingsView.showToast("Blad podczas pobierania zdjec profilu z serwera");
+                    Log.e("getProfileData", t.getMessage());
                 }
             });
             RestClient.getClient().requestUser(User.getUserId()).enqueue(new Callback<Users>() {
@@ -46,6 +49,8 @@ public class SettingsViewPresenter implements SettingsViewContracts.SettingsView
                 }
                 @Override
                 public void onFailure(Call<Users> call, Throwable t) {
+                    settingsView.showToast("Blad podczas pobierania danych profilu z serwera");
+                    Log.e("getProfileData", t.getMessage());
                 }
             });
         }catch (Exception e){

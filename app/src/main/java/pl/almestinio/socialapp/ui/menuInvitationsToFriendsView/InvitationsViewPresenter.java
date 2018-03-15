@@ -1,5 +1,7 @@
 package pl.almestinio.socialapp.ui.menuInvitationsToFriendsView;
 
+import android.util.Log;
+
 import java.util.List;
 
 import pl.almestinio.socialapp.http.RestClient;
@@ -34,7 +36,8 @@ public class InvitationsViewPresenter implements InvitationsViewContracts.Invita
                 }
                 @Override
                 public void onFailure(Call<UserFriend> call, Throwable t) {
-
+                    invitationsView.showToast("Blad podczas pobierania niezaakceptowanych uzytkownikow z serwera");
+                    Log.e("getNotAcceptedUsers", t.getMessage());
                 }
             });
         }catch (Exception e){

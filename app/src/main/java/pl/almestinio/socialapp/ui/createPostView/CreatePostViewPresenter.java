@@ -25,45 +25,38 @@ public class CreatePostViewPresenter implements CreatePostViewContract.CreatePos
 
     @Override
     public void onCreatePostButtonClick(String text, String imageUrl) {
-        try {
-            Thread thread = new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    try {
-                        SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String current_time_str = time_formatter.format(System.currentTimeMillis());
-                        Log.e("LD", current_time_str);
-                        if(imageUrl.equals("")){
-                            RestClient.getClient().createPost(User.getUserId(), text, "", current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
-                                @Override
-                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                                }
-                                @Override
-                                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                                }
-                            });
-                        }else{
-                            RestClient.getClient().createPost(User.getUserId(), text, "https://almestinio.pl/phpimage/"+imageUrl, current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
-                                @Override
-                                public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
-                                }
-                                @Override
-                                public void onFailure(Call<Pojodemo> call, Throwable t) {
-                                }
-                            });
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+        SimpleDateFormat time_formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String current_time_str = time_formatter.format(System.currentTimeMillis());
+        if(text.length()>0){
+            if(imageUrl.equals("")){
+                RestClient.getClient().createPost(User.getUserId(), text, "", current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
+                    @Override
+                    public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
                     }
-                }
-            });
-            thread.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+                    @Override
+                    public void onFailure(Call<Pojodemo> call, Throwable t) {
+//                        createPostView.showToast("Wystapil blad przy dodawaniu posta");
+                        Log.e("onCreatePostButtonClick", t.getMessage());
+                    }
+                });
+            }else{
+                RestClient.getClient().createPost(User.getUserId(), text, "https://almestinio.pl/phpimage/"+imageUrl, current_time_str, "Public").enqueue(new Callback<Pojodemo>() {
+                    @Override
+                    public void onResponse(Call<Pojodemo> call, Response<Pojodemo> response) {
+                    }
+                    @Override
+                    public void onFailure(Call<Pojodemo> call, Throwable t) {
+//                        createPostView.showToast("Wystapil blad przy dodawaniu posta");
+                        Log.e("onCreatePostButtonClick", t.getMessage());
+                    }
+                });
+            }
+            createPostView.showToast("Dodano post!");
+            createPostView.finishActivity();
+        }else{
+            createPostView.showToast("Wiadomosc powinna zawierac minimum jeden znak");
         }
-        createPostView.showToast("Dodano post!");
-        createPostView.finishActivity();
     }
 
     @Override
